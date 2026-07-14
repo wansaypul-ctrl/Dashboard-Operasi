@@ -1,0 +1,1028 @@
+     1→#### **JABATAN TENAGA MANUSIA (JTM)** 
+     2→
+     3→KEMENTERIAN SUMBER MANUSIA MALAYSIA 
+     4→
+     5→# **DOKUMEN KEPERLUAN PRODUK** 
+     6→
+     7→**(PRODUCT REQUIREMENTS DOCUMENT — PRD)** 
+     8→
+     9→## **Sistem Dashboard Pemantauan Bersepadu** 
+    10→
+    11→_Integrated Monitoring Dashboard System — ILP / IKM Operations_ 
+    12→
+    13→|**Perkara**|**Butran**|
+    14→|---|---|
+    15→|Versi Dokumen|1.0|
+    16→|Tarikh Terbitan|14 Julai 2026|
+    17→|Status|Draf untuk Kelulusan|
+    18→|AI Development Engine|z.ai — Model GLM 5.2|
+    19→|Backend / Database|Supabase (PostgreSQL, Auth, Storage, Realtme)|
+    20→|Hostng / Deployment|Netlify (CI/CD)|
+    21→|Reka Bentuk UI/UX|Glassmorphism — Modern Responsive Design|
+    22→|Klasifkasi|Terhad — Kegunaan Dalaman|
+    23→
+    24→
+    25→
+    26→_PRD — Sistem Dashboard Pemantauan Bersepadu JTM_ 
+    27→
+    28→### **Isi Kandungan** 
+    29→
+    30→|1. Pengenalan**.................................................................................................................................. 3**|
+    31→|---|
+    32→|2. Pemegang Taruh & Peranan Pengguna**..........................................................................................5**|
+    33→|3. Seni Bina Teknikal Sistem**..............................................................................................................6**|
+    34→|4. Keperluan Fungsian — Modul Dashboard**......................................................................................8**|
+    35→|5. Reka Bentuk Pangkalan Data (Supabase)**.....................................................................................16**|
+    36→|6. Reka Bentuk UI/UX — Glassmorphism**........................................................................................18**|
+    37→|7. Keperluan Bukan Fungsian**..........................................................................................................20**|
+    38→|8. Pelan Penempatan (Deployment Plan)**........................................................................................21**|
+    39→|9. Pelan Pengujian (Testng Plan)**....................................................................................................22**|
+    40→|10. Garis Masa Projek & Pencapaian Utama**....................................................................................23**|
+    41→|11. Risiko & Strategi Mitgasi**..........................................................................................................24**|
+    42→|12. Lampiran**..................................................................................................................................25**|
+    43→
+    44→
+    45→
+    46→Muka Surat 1 daripada 28 
+    47→
+    48→_PRD — Sistem Dashboard Pemantauan Bersepadu JTM_ 
+    49→
+    50→### **1.  Pengenalan** 
+    51→
+    52→#### **1.1 Latar Belakang** 
+    53→
+    54→Jabatan Tenaga Manusia (JTM) melalui rangkaian Institut Latihan Perindustrian (ILP) dan Institut Kemahiran Mahir (IKM) di seluruh Malaysia menguruskan pelbagai aspek operasi harian merangkumi akademik, kewangan, aset dan sumber manusia. Pada masa kini, pemantauan bagi setiap aspek ini dijalankan secara berasingan menggunakan sistem legasi dan hamparan Excel manual, menyebabkan kesukaran mendapatkan gambaran menyeluruh (single source of truth) bagi membuat keputusan strategik secara tepat pada masanya. 
+    55→
+    56→Sistem Dashboard Pemantauan Bersepadu dicadangkan untuk menggabungkan 14 domain pemantauan kritikal ke dalam satu platform digital tunggal yang responsif, selamat dan mesra pengguna, dibina menggunakan seni bina moden berasaskan awan (cloud-native). 
+    57→
+    58→#### **1.2 Objektif Projek** 
+    59→
+    60→- Menyediakan satu platform dashboard bersepadu bagi memantau prestasi akademik, kewangan, aset dan sumber manusia ILP/IKM secara masa nyata (real-time). 
+    61→
+    62→- Mengautomasikan pengiraan KPI dan penjanaan amaran (alert) bagi perkara kritikal seperti tarikh luput pentauliahan program dan pematuhan bajet. 
+    63→
+    64→- Mengurangkan pergantungan kepada proses manual berasaskan Excel dan e-mel bagi pelaporan pengurusan. 
+    65→
+    66→- Menyediakan antara muka pengguna moden bergaya Glassmorphism yang meningkatkan pengalaman pengguna (UX) golongan pentadbir dan pengurusan atasan. 
+    67→
+    68→- Membolehkan capaian sistem dari mana-mana peranti melalui pelayar web tanpa keperluan pemasangan perisian tambahan. 
+    69→
+    70→- Memanfaatkan keupayaan AI (z.ai GLM 5.2) bagi menjana ringkasan analitik, insight automatik dan sokongan carian bahasa semula jadi. 
+    71→
+    72→#### **1.3 Skop Projek** 
+    73→
+    74→Skop pembangunan Fasa 1 merangkumi pembangunan 14 modul pemantauan dashboard seperti disenaraikan dalam Bahagian 4, lengkap dengan pangkalan data Supabase berfungsi penuh (termasuk data dummy/pra-populasi bagi tujuan demonstrasi dan ujian), reka bentuk UI/UX Glassmorphism responsif, serta penempatan (deployment) automatik ke persekitaran pengeluaran (production) di Netlify. 
+    75→
+    76→Skop TIDAK termasuk (Fasa 2 dan seterusnya): modul pengurusan peperiksaan penuh, sistem e-pembelajaran (LMS), integrasi sistem gaji, dan aplikasi mobile native (iOS/Android). 
+    77→
+    78→#### **1.4 Definisi & Akronim** 
+    79→
+    80→|**Istlah**|**Penerangan**|
+    81→|---|---|
+    82→|JTM|Jabatan Tenaga Manusia|
+    83→|ILP / IKM|Insttut Lathan Perindustrian / Insttut Kemahiran Mahir|
+    84→|SKM / DKM / DLKM|Sijil / Diploma / Diploma Lanjutan Kemahiran Malaysia|
+    85→|DV|Dual Vocatonal (Pengajar Lathan Dwi Sistem)|
+    86→|PRD|Product Requirements Document|
+    87→|RLS|Row Level Security (kawalan akses baris data Supabase)|
+    88→|SLA|Service Level Agreement|
+    89→
+    90→
+    91→
+    92→Muka Surat 2 daripada 28 
+    93→
+    94→_PRD — Sistem Dashboard Pemantauan Bersepadu JTM_ 
+    95→
+    96→|**Istlah**|**Penerangan**|
+    97→|---|---|
+    98→|GLM 5.2|Model bahasa besar (LLM) terbitan z.ai digunakan sebagai enjin pembangunan &<br>analitk AI|
+    99→|CI/CD|Contnuous Integraton / Contnuous Deployment|
+   100→|OS28000 / OS26000|Kod Objek Am Bajet Mengurus (Penyelenggaraan / Bekalan)|
+   101→
+   102→
+   103→
+   104→Muka Surat 3 daripada 28 
+   105→
+   106→_PRD — Sistem Dashboard Pemantauan Bersepadu JTM_ 
+   107→
+   108→### **2.  Pemegang Taruh & Peranan Pengguna** 
+   109→
+   110→Sistem akan menggunakan kawalan akses berasaskan peranan (Role-Based Access Control) yang dikuatkuasakan melalui Supabase Auth dan Row Level Security (RLS). 
+   111→
+   112→|**Peranan**|**Capaian Sistem**|**Contoh Pengguna**|
+   113→|---|---|---|
+   114→|Super Admin|Capaian penuh semua modul, pengurusan<br>pengguna & tetapan sistem|Pengarah ICT / Pentadbir Sistem|
+   115→|Pengurus Kanan (Top<br>Management)|Papar sahaja (read-only) — semua 14 modul<br>dashboard peringkat ringkasan|Pengarah ILP/IKM, Timbalan<br>Pengarah|
+   116→|Pengurus Unit/Bahagian|Papar & urus data bagi modul di bawah bidang<br>kuasa sahaja|Pengurus Akademik, Pengurus<br>Kewangan, Pengurus Aset|
+   117→|Pegawai Input Data|Kemasukan & kemas kini data mentah bagi<br>modul berkaitan|Pegawai Rekod, Pegawai Stor,<br>Pegawai ICT|
+   118→|Pelawat/Auditor (Guest)|Papar laporan terpilih sahaja, tada capaian<br>kemas kini|Pihak Audit Dalaman/Luaran|
+   119→
+   120→
+   121→
+   122→Muka Surat 4 daripada 28 
+   123→
+   124→_PRD — Sistem Dashboard Pemantauan Bersepadu JTM_ 
+   125→
+   126→### **3.  Seni Bina Teknikal Sistem** 
+   127→
+   128→#### **3.1 Ringkasan Tumpukan Teknologi (Tech Stack)** 
+   129→
+   130→|**Lapisan**|**Teknologi**|**Catatan**|
+   131→|---|---|---|
+   132→|Enjin Pembangunan AI|z.ai — Model GLM 5.2|Digunakan sebagai pair-programmer<br>untuk penjanaan kod frontend/backend<br>dan enjin analitk/insight dalam aplikasi|
+   133→|Frontend Framework|React 18 + Vite / Next.js (Statc Export)|Serasi penuh dengan pelan penempatan<br>Netlify (JAMstack)|
+   134→|Reka Bentuk UI|TailwindCSS + Custom Glassmorphism Design<br>System|Lihat Bahagian 6|
+   135→|Carta & Visualisasi|Recharts / Chart.js|Carta responsif untuk semua 14 modul|
+   136→|Backend-as-a-Service|Supabase (PostgreSQL 15)|Auth, Database, Storage, Realtme, Edge<br>Functons|
+   137→|Pengesahan Pengguna|Supabase Auth (Email/Password + Magic Link +<br>SSO pilihan)|Disokong Row Level Security (RLS)|
+   138→|API Layer|Supabase Auto-generated REST/GraphQL +<br>PostgREST|Edge Functons (Deno) untuk logik custom|
+   139→|Hostng / Deployment|Netlify (Build & Deploy CI/CD)|Sambungan terus ke repositori Git|
+   140→|Kawalan Versi|Git (GitHub/GitLab)|Deploy preview automatk setap Pull<br>Request|
+   141→|Pemantauan & Log|Netlify Analytcs + Supabase Logs|Pemantauan prestasi & ralat|
+   142→
+   143→
+   144→
+   145→#### **3.2 Rajah Seni Bina Sistem (Architecture Overview)** 
+   146→
+   147→Seni bina sistem mengikut corak Jamstack tiga lapisan berikut: 
+   148→
+   149→|`┌─────────────────────────────────────────────────────────┐`<br>`│   PENGGUNA (Web Browser — Desktop / Tablet / Mobile)      │`<br>`└───────────────────────────┬─────────────────────────────┘`<br>`│ HTTPS`<br>`┌───────────────────────────▼─────────────────────────────┐`<br>|
+   150→|---|
+   151→|`│  FRONTEND — React/Next.js + Tailwind (Glassmorphism UI)   │`<br>`│  Dihoskan & di-CI/CD-kan melalui NETLIFY                  │`<br>`└───────────────────────────┬─────────────────────────────┘`<br>`│ Supabase JS Client SDK (REST/Realtime)`<br>`┌───────────────────────────▼─────────────────────────────┐`<br>`│                    SUPABASE PLATFORM                      │`<br>`│  ┌───────────┐ ┌───────────┐ ┌──────────┐ ┌────────────┐ │`<br>|
+   152→|`│  │  Auth     │ │ PostgreSQL│ │ Storage  │ │Edge Funcs  │ │`<br>`│  │  (JWT/RLS)│ │  Database │ │ (Fail)   │ │ (Deno/API) │ │`|
+   153→|`│  └───────────┘ └───────────┘ └──────────┘ └─────┬──────┘ │`<br>`└──────────────────────────────────────────────────┼───────┘`<br>`│ API Key`<br>`┌────────────▼────────────┐`<br>`│   z.ai GLM 5.2 API       │`<br>`│   (Insight & Chat AI)    │`<br>`└──────────────────────────┘`|
+   154→
+   155→
+   156→
+   157→Muka Surat 5 daripada 28 
+   158→
+   159→_PRD — Sistem Dashboard Pemantauan Bersepadu JTM_ 
+   160→
+   161→#### **3.3 Aliran Data (Data Flow)** 
+   162→
+   163→- Langkah 1: Pengguna log masuk melalui Supabase Auth; token JWT dijana dan disimpan pada sesi pelayar. 
+   164→
+   165→- Langkah 2: Frontend memanggil API Supabase (PostgREST) untuk mendapatkan/menghantar data mengikut kebenaran RLS peranan pengguna. 
+   166→
+   167→- Langkah 3: Data agregat (KPI, jumlah, peratus) dikira sama ada melalui SQL View/Materialized View di Supabase atau Edge Function. 
+   168→
+   169→- Langkah 4: Modul 'AI Insight' menghantar ringkasan data (bukan data mentah sensitif) ke z.ai GLM 5.2 API melalui Edge Function bagi menjana naratif analitik automatik dalam Bahasa Malaysia. 
+   170→
+   171→- Langkah 5: Sebarang kemas kini data (contoh: rekod aduan baharu) dipapar secara masa nyata pada dashboard lain menggunakan ciri Supabase Realtime (WebSocket). 
+   172→
+   173→#### **3.4 Integrasi AI — z.ai GLM 5.2** 
+   174→
+   175→Model GLM 5.2 daripada z.ai akan digunakan pada dua peringkat: 
+   176→
+   177→- Peringkat Pembangunan (Development-time): Sebagai alat bantuan pembangunan (AI pair-programmer) untuk menjana kod komponen React, fungsi SQL, dan skrip Edge Function berdasarkan spesifikasi PRD ini. 
+   178→
+   179→- Peringkat Masa Jalan (Runtime): Sebagai enjin 'AI Insight Generator' terbenam dalam dashboard — menjana ringkasan naratif automatik (contoh: "Enrolmen Sesi Jun menurun 8% berbanding sesi lepas terutama di ILP Selayang") dan menyokong ciri carian bahasa semula jadi (natural language query) ke atas data dashboard. 
+   180→
+   181→Nota Keselamatan: Kunci API GLM 5.2 disimpan sebagai pembolehubah persekitaran (environment variable) di sisi pelayan (Supabase Edge Function) dan tidak sekali-kali didedahkan pada kod sisi klien (frontend). 
+   182→
+   183→Muka Surat 6 daripada 28 
+   184→
+   185→_PRD — Sistem Dashboard Pemantauan Bersepadu JTM_ 
+   186→
+   187→### **4.  Keperluan Fungsian — Modul Dashboard** 
+   188→
+   189→Bahagian ini menghuraikan 14 modul pemantauan yang membentuk teras Sistem Dashboard Pemantauan Bersepadu. Setiap modul dipetakan kepada satu atau lebih jadual Supabase, disertakan medan data, jenis visualisasi dan KPI berkaitan. 
+   190→
+   191→##### **Papan Pemuka Utama (Landing Dashboard):** 
+   192→
+   193→Halaman utama memaparkan 'Ringkasan Eksekutif' dalam bentuk kad KPI (KPI cards) merentasi kesemua 14 modul, dengan navigasi sisi (sidebar) beralun kaca (glass sidebar) untuk capaian pantas ke setiap modul terperinci. 
+   194→
+   195→##### **FR-01  —  Pemantauan Pengambilan & Enrolmen Pelajar Sepenuh Masa** 
+   196→
+   197→Memaparkan perbandingan sasaran pengambilan (intake) berbanding bilangan pelajar yang berjaya mendaftar (enrolled) bagi setiap sesi pembelajaran (contoh: Sesi Jun, Sesi Disember), mengikut program dan pusat latihan. 
+   198→
+   199→##### **User Story:** 
+   200→
+   201→- Sebagai Pengurus Akademik, saya ingin melihat peratus pencapaian enrolmen berbanding sasaran bagi setiap sesi supaya saya dapat merancang strategi pemasaran dan pengambilan. 
+   202→
+   203→##### **Medan Data Utama (Key Data Fields):** 
+   204→
+   205→|**Medan**|**Jenis Data**|**Keterangan**|
+   206→|---|---|---|
+   207→|session_id|UUID|Pengenal unik sesi|
+   208→|session_name|TEXT|Cth: Sesi Jun 2026|
+   209→|program_id|UUID|Rujukan program|
+   210→|target_intake|INT|Sasaran pengambilan|
+   211→|actual_enrolled|INT|Bilangan mendafar sebenar|
+   212→|center_name|TEXT|Pusat lathan / kampus|
+   213→|gender_male|INT|Bilangan pelajar lelaki|
+   214→|gender_female|INT|Bilangan pelajar perempuan|
+   215→
+   216→
+   217→
+   218→##### **Jadual Supabase:** `tbl_enrolment_fulltime` 
+   219→
+   220→**Visualisasi Dashboard:** Bar chart (Sasaran vs Sebenar), Line trend merentas sesi, Peratus pencapaian (%), Peta taburan pusat latihan. 
+   221→
+   222→**KPI:** _Peratus Pencapaian Enrolmen = (actual_enrolled / target_intake) × 100%_ 
+   223→
+   224→##### **FR-02  —  Pemantauan Aduan Pelanggan** 
+   225→
+   226→Menjejak bilangan aduan pelanggan yang diterima, kategori aduan, status penyelesaian dan tempoh masa maklum balas berbanding SLA (Service Level Agreement) yang ditetapkan. 
+   227→
+   228→##### **User Story:** 
+   229→
+   230→- Sebagai Pegawai Khidmat Pelanggan, saya ingin memantau tempoh maklum balas aduan secara masa nyata supaya SLA sentiasa dipatuhi. 
+   231→
+   232→##### **Medan Data Utama (Key Data Fields):** 
+   233→
+   234→Muka Surat 7 daripada 28 
+   235→
+   236→_PRD — Sistem Dashboard Pemantauan Bersepadu JTM_ 
+   237→
+   238→|**Medan**|**Jenis Data**|**Keterangan**|
+   239→|---|---|---|
+   240→|complaint_id|UUID|Pengenal unik aduan|
+   241→|date_received|DATE|Tarikh aduan diterima|
+   242→|category|TEXT|Kategori (akademik/kemudahan/kewangan)|
+   243→|status|TEXT|Baharu/Dalam Tindakan/Selesai|
+   244→|date_resolved|DATE|Tarikh diselesaikan|
+   245→|response_tme_hours|NUMERIC|Tempoh maklum balas (jam)|
+   246→|sla_target_hours|NUMERIC|Sasaran SLA (jam)|
+   247→|complainant_type|TEXT|Pelajar/Ibu bapa/Majikan|
+   248→
+   249→
+   250→
+   251→##### **Jadual Supabase:** `tbl_customer_complaints` 
+   252→
+   253→**Visualisasi Dashboard:** Trend bilangan aduan bulanan, Gauge purata masa maklum balas, Peratus pematuhan SLA, Pecahan mengikut kategori (donut). 
+   254→
+   255→**KPI:** _Pematuhan SLA (%) = (Aduan diselesaikan dalam SLA / Jumlah aduan) × 100%_ 
+   256→
+   257→##### **FR-03  —  Pentauliahan Program Sepenuh Masa** 
+   258→
+   259→Memantau status pentauliahan (accreditation) setiap program sepenuh masa termasuk tarikh mula sah dan tarikh luput, dengan amaran automatik bagi pentauliahan yang hampir tamat tempoh. 
+   260→
+   261→##### **User Story:** 
+   262→
+   263→- Sebagai Pengurus Kualiti, saya ingin menerima amaran awal 90 hari sebelum pentauliahan program tamat tempoh supaya permohonan pembaharuan dapat dibuat tepat pada masanya. 
+   264→
+   265→##### **Medan Data Utama (Key Data Fields):** 
+   266→
+   267→|**Medan**|**Jenis Data**|**Keterangan**|
+   268→|---|---|---|
+   269→|program_id|UUID|Pengenal unik program|
+   270→|program_name|TEXT|Nama program|
+   271→|accreditaton_body|TEXT|Badan pentauliahan (cth: JPK)|
+   272→|cert_no|TEXT|Nombor sijil pentauliahan|
+   273→|start_date|DATE|Tarikh mula sah|
+   274→|expiry_date|DATE|Tarikh luput|
+   275→|status|TEXT|Aktf/Akan Luput/Luput|
+   276→
+   277→
+   278→
+   279→##### **Jadual Supabase:** `tbl_program_accreditation` 
+   280→
+   281→**Visualisasi Dashboard:** Senarai status dengan badge warna (hijau/kuning/merah), Kalendar luput, Kad amaran 90/60/30 hari. 
+   282→
+   283→**KPI:** _Bilangan program berstatus 'Akan Luput' dalam tempoh 90 hari_ 
+   284→
+   285→##### **FR-04  —  Sijil Kemahiran Malaysia (SKM) Pengajar DV** 
+   286→
+   287→Memantau bilangan dan peratus pengajar Dual Vocational (DV) yang memegang Sijil Kemahiran Malaysia Tahap 3 (SKM3), Diploma Kemahiran Malaysia (DKM) dan Diploma Lanjutan Kemahiran Malaysia (DLKM). 
+   288→
+   289→##### **User Story:** 
+   290→
+   291→Muka Surat 8 daripada 28 
+   292→
+   293→_PRD — Sistem Dashboard Pemantauan Bersepadu JTM_ 
+   294→
+   295→- Sebagai Ketua Jabatan, saya ingin melihat peratus pengajar bertauliah mengikut tahap sijil untuk memastikan pematuhan piawaian latihan. 
+   296→
+   297→##### **Medan Data Utama (Key Data Fields):** 
+   298→
+   299→|**Medan**|**Jenis Data**|**Keterangan**|
+   300→|---|---|---|
+   301→|instructor_id|UUID|Pengenal unik pengajar|
+   302→|full_name|TEXT|Nama pengajar|
+   303→|department|TEXT|Jabatan/Bidang|
+   304→|cert_level|TEXT|SKM3/DKM/DLKM|
+   305→|cert_no|TEXT|Nombor sijil|
+   306→|issue_date|DATE|Tarikh dikeluarkan|
+   307→|expiry_date|DATE|Tarikh luput (jika ada)|
+   308→
+   309→
+   310→
+   311→##### **Jadual Supabase:** `tbl_instructor_certification` 
+   312→
+   313→**Visualisasi Dashboard:** Donut chart peratus mengikut tahap (SKM3/DKM/DLKM), Jadual senarai pengajar belum bersijil. 
+   314→
+   315→**KPI:** _Peratus Pengajar Bersijil = (Bilangan bersijil / Jumlah pengajar DV) × 100%_ 
+   316→
+   317→##### **FR-05  —  Pemantauan Kursus Tahunan Kakitangan (40 Jam Setahun)** 
+   318→
+   319→Menjejak jumlah jam kursus/latihan yang telah dilengkapkan oleh setiap kakitangan berbanding sasaran minimum 40 jam setahun seperti ditetapkan oleh JPA. 
+   320→
+   321→##### **User Story:** 
+   322→
+   323→- Sebagai Pegawai Sumber Manusia, saya ingin memantau kakitangan yang belum mencapai 40 jam latihan tahunan menjelang penghujung tahun. 
+   324→
+   325→##### **Medan Data Utama (Key Data Fields):** 
+   326→
+   327→|**Medan**|**Jenis Data**|**Keterangan**|
+   328→|---|---|---|
+   329→|staf_id|UUID|Pengenal unik kakitangan|
+   330→|full_name|TEXT|Nama kakitangan|
+   331→|department|TEXT|Jabatan|
+   332→|year|INT|Tahun|
+   333→|hours_completed|NUMERIC|Jumlah jam selesai|
+   334→|target_hours|NUMERIC|Sasaran (default 40)|
+   335→|last_course_date|DATE|Tarikh kursus terkini|
+   336→
+   337→
+   338→
+   339→##### **Jadual Supabase:** `tbl_staff_training` 
+   340→
+   341→**Visualisasi Dashboard:** Progress bar setiap kakitangan, Peratus pematuhan jabatan, Senarai kakitangan berisiko tidak capai sasaran. 
+   342→
+   343→**KPI:** _Peratus Pematuhan = (hours_completed / 40) × 100%, dikira per kakitangan dan purata jabatan_ 
+   344→
+   345→Muka Surat 9 daripada 28 
+   346→
+   347→_PRD — Sistem Dashboard Pemantauan Bersepadu JTM_ 
+   348→
+   349→##### **FR-06  —  Pemantauan Perbelanjaan Bajet Mengurus (OS28000 & OS26000)** 
+   350→
+   351→Memantau peruntukan dan perbelanjaan bagi Objek Am 28000 (Penyelenggaraan) dan 26000 (Bekalan & Bahan Guna Habis) mengikut bulan. 
+   352→
+   353→##### **User Story:** 
+   354→
+   355→- Sebagai Pegawai Kewangan, saya ingin melihat peratus perbelanjaan bajet mengurus secara bulanan untuk mengelakkan lebihan (overspend) atau bajet terbiar. 
+   356→
+   357→##### **Medan Data Utama (Key Data Fields):** 
+   358→
+   359→|**Medan**|**Jenis Data**|**Keterangan**|
+   360→|---|---|---|
+   361→|budget_code|TEXT|Kod objek (OS28000/OS26000)|
+   362→|month|DATE|Bulan/Tahun|
+   363→|allocaton|NUMERIC|Peruntukan|
+   364→|spent|NUMERIC|Perbelanjaan|
+   365→|balance|NUMERIC|Baki|
+   366→|remarks|TEXT|Catatan|
+   367→
+   368→
+   369→
+   370→##### **Jadual Supabase:** `tbl_budget_mengurus` 
+   371→
+   372→**Visualisasi Dashboard:** Stacked bar peruntukan vs perbelanjaan, Trend bulanan, Gauge peratus penggunaan bajet. **KPI:** _Peratus Penggunaan Bajet = (spent / allocation) × 100%_ 
+   373→
+   374→##### **FR-07  —  Pemantauan Perbelanjaan Bajet Pembangunan (Penyelenggaraan/Naik Taraf)** 
+   375→
+   376→Memantau status kewangan projek pembangunan seperti kerja penyelenggaraan dan naik taraf infrastruktur, termasuk peratus siap projek. 
+   377→
+   378→##### **User Story:** 
+   379→
+   380→- Sebagai Pengurus Fasiliti, saya ingin memantau kemajuan kewangan dan fizikal projek naik taraf berbanding jadual yang dirancang. 
+   381→
+   382→##### **Medan Data Utama (Key Data Fields):** 
+   383→
+   384→|**Medan**|**Jenis Data**|**Keterangan**|
+   385→|---|---|---|
+   386→|project_id|UUID|Pengenal projek|
+   387→|project_name|TEXT|Nama projek|
+   388→|category|TEXT|Penyelenggaraan/Naik Taraf|
+   389→|allocaton|NUMERIC|Peruntukan projek|
+   390→|spent|NUMERIC|Perbelanjaan setakat ini|
+   391→|completon_pct|NUMERIC|Peratus siap fzikal|
+   392→|status|TEXT|Belum Mula/Dalam Pelaksanaan/Siap|
+   393→|target_date|DATE|Tarikh siap dijadualkan|
+   394→
+   395→
+   396→
+   397→##### **Jadual Supabase:** `tbl_budget_pembangunan` 
+   398→
+   399→**Visualisasi Dashboard:** Senarai kad projek dengan progress bar berkembar (kewangan & fizikal), carta Gantt ringkas. 
+   400→
+   401→Muka Surat 10 daripada 28 
+   402→
+   403→_PRD — Sistem Dashboard Pemantauan Bersepadu JTM_ 
+   404→
+   405→##### **KPI:** _Indeks Prestasi Kos = spent / (allocation × completion_pct)_ 
+   406→
+   407→##### **FR-08  —  Pemantauan Verifikasi Stok** 
+   408→
+   409→Menjejak proses semakan (verifikasi) stok fizikal berbanding rekod sistem, termasuk percanggahan (variance) yang dikesan. 
+   410→
+   411→##### **User Story:** 
+   412→
+   413→- Sebagai Pegawai Stor, saya ingin melihat senarai item dengan percanggahan kuantiti selepas semakan stok tahunan/suku tahunan. 
+   414→
+   415→##### **Medan Data Utama (Key Data Fields):** 
+   416→
+   417→|**Medan**|**Jenis Data**|**Keterangan**|
+   418→|---|---|---|
+   419→|item_code|TEXT|Kod item|
+   420→|item_name|TEXT|Nama item|
+   421→|system_qty|INT|Kuantt mengikut sistem|
+   422→|physical_qty|INT|Kuantt fzikal disemak|
+   423→|variance|INT|Percanggahan (auto-kira)|
+   424→|verifed_by|TEXT|Nama pegawai penyemak|
+   425→|verify_date|DATE|Tarikh semakan|
+   426→|status|TEXT|Sepadan/Percanggahan|
+   427→
+   428→
+   429→
+   430→##### **Jadual Supabase:** `tbl_stock_verification` 
+   431→
+   432→**Visualisasi Dashboard:** Jadual percanggahan (highlight merah), Peratus item disahkan, Trend percanggahan mengikut kategori stok. 
+   433→
+   434→**KPI:** _Peratus Ketepatan Stok = (Item sepadan / Jumlah item disemak) × 100%_ 
+   435→
+   436→##### **FR-09  —  Enrolmen Peserta Kursus Jangka Pendek** 
+   437→
+   438→Memantau bilangan pendaftaran peserta bagi kursus jangka pendek (short course) termasuk kapasiti, jenis peserta (awam/korporat) dan hasil pendapatan. 
+   439→
+   440→##### **User Story:** 
+   441→
+   442→- Sebagai Pegawai Latihan Jangka Pendek, saya ingin melihat kursus paling laris dan kadar pengisian kapasiti bagi setiap kursus yang ditawarkan. 
+   443→
+   444→##### **Medan Data Utama (Key Data Fields):** 
+   445→
+   446→|**Medan**|**Jenis Data**|**Keterangan**|
+   447→|---|---|---|
+   448→|course_id|UUID|Pengenal kursus|
+   449→|course_name|TEXT|Nama kursus|
+   450→|session_date|DATE|Tarikh kursus|
+   451→|capacity|INT|Kapasit maksimum|
+   452→|partcipant_count|INT|Bilangan peserta didafar|
+   453→|category|TEXT|Awam/Korporat|
+   454→
+   455→
+   456→
+   457→Muka Surat 11 daripada 28 
+   458→
+   459→_PRD — Sistem Dashboard Pemantauan Bersepadu JTM_ 
+   460→
+   461→|**Medan**|**Jenis Data**|**Keterangan**|
+   462→|---|---|---|
+   463→|revenue|NUMERIC|Hasil kutpan|
+   464→
+   465→
+   466→
+   467→##### **Jadual Supabase:** `tbl_short_course_enrolment` 
+   468→
+   469→**Visualisasi Dashboard:** Ranking kursus terlaris, Peratus pengisian kapasiti, Trend hasil bulanan. **KPI:** _Kadar Pengisian = (participant_count / capacity) × 100%_ 
+   470→
+   471→##### **FR-10  —  Senarai Pelajar Sepenuh Masa Bergraduat** 
+   472→
+   473→Memaparkan senarai dan statistik pelajar sepenuh masa yang bergraduat mengikut sesi pembelajaran, termasuk status kebolehpasaran (employability). 
+   474→
+   475→##### **User Story:** 
+   476→
+   477→- Sebagai Pengurus Akademik, saya ingin melihat bilangan graduan setiap sesi dan status pekerjaan mereka selepas tamat pengajian. 
+   478→
+   479→##### **Medan Data Utama (Key Data Fields):** 
+   480→
+   481→|**Medan**|**Jenis Data**|**Keterangan**|
+   482→|---|---|---|
+   483→|student_id|UUID|Pengenal pelajar|
+   484→|full_name|TEXT|Nama pelajar|
+   485→|program_id|UUID|Rujukan program|
+   486→|session_name|TEXT|Sesi pengajian|
+   487→|graduaton_date|DATE|Tarikh bergraduat|
+   488→|fnal_grade|TEXT|Gred/CGPA akhir|
+   489→|employment_status|TEXT|Bekerja/Belum Bekerja/Melanjut Pelajaran|
+   490→
+   491→
+   492→
+   493→##### **Jadual Supabase:** `tbl_graduates` 
+   494→
+   495→**Visualisasi Dashboard:** Trend bilangan graduan per sesi, Peratus kebolehpasaran, Jadual senarai boleh ditapis mengikut program. 
+   496→
+   497→**KPI:** _Peratus Kebolehpasaran = (Bekerja dalam 6 bulan / Jumlah graduan) × 100%_ 
+   498→
+   499→##### **FR-11  —  Pemantauan Akaun Amanah (Perbelanjaan vs Pendapatan)** 
+   500→
+   501→Memantau kedudukan kewangan Akaun Amanah dengan perbandingan pendapatan (income) dan perbelanjaan (expense) serta baki terkumpul. 
+   502→
+   503→##### **User Story:** 
+   504→
+   505→- Sebagai Pegawai Kewangan Kanan, saya ingin melihat aliran tunai Akaun Amanah secara bulanan untuk memastikan kelestarian kewangan. 
+   506→
+   507→##### **Medan Data Utama (Key Data Fields):** 
+   508→
+   509→|**Medan**|**Jenis Data**|**Keterangan**|
+   510→|---|---|---|
+   511→|transacton_id|UUID|Pengenal transaksi|
+   512→|transacton_type|TEXT|Income/Expense|
+   513→|category|TEXT|Kategori transaksi|
+   514→
+   515→
+   516→
+   517→Muka Surat 12 daripada 28 
+   518→
+   519→_PRD — Sistem Dashboard Pemantauan Bersepadu JTM_ 
+   520→
+   521→|**Medan**|**Jenis Data**|**Keterangan**|
+   522→|---|---|---|
+   523→|amount|NUMERIC|Jumlah (RM)|
+   524→|transacton_date|DATE|Tarikh transaksi|
+   525→|running_balance|NUMERIC|Baki terkumpul|
+   526→
+   527→
+   528→
+   529→##### **Jadual Supabase:** `tbl_trust_account` 
+   530→
+   531→**Visualisasi Dashboard:** Carta perbandingan Pendapatan vs Perbelanjaan (bar berkembar), Trend baki (line chart). 
+   532→
+   533→**KPI:** _Nisbah Kewangan = Pendapatan / Perbelanjaan (sasaran > 1.0)_ 
+   534→
+   535→##### **FR-12  —  Pemantauan Akaun Mengurus (Peratus Perbelanjaan)** 
+   536→
+   537→Memantau peratus perbelanjaan keseluruhan Akaun Mengurus berbanding peruntukan tahunan bagi setiap kod akaun. 
+   538→
+   539→##### **User Story:** 
+   540→
+   541→- Sebagai Pengurus Kewangan, saya ingin melihat gambaran keseluruhan peratus perbelanjaan semua kod akaun mengurus dalam satu paparan ringkas. 
+   542→
+   543→##### **Medan Data Utama (Key Data Fields):** 
+   544→
+   545→|**Medan**|**Jenis Data**|**Keterangan**|
+   546→|---|---|---|
+   547→|account_code|TEXT|Kod akaun mengurus|
+   548→|account_name|TEXT|Nama akaun|
+   549→|allocaton|NUMERIC|Peruntukan tahunan|
+   550→|spent|NUMERIC|Perbelanjaan terkini|
+   551→|month|DATE|Bulan semasa|
+   552→
+   553→
+   554→
+   555→##### **Jadual Supabase:** `tbl_mengurus_account` 
+   556→
+   557→**Visualisasi Dashboard:** Gauge/speedometer peratus perbelanjaan per kod akaun, Jadual ringkasan berwarna (hijau <70%, kuning 70-90%, merah >90%). 
+   558→
+   559→**KPI:** _Peratus Perbelanjaan = (spent / allocation) × 100%_ 
+   560→
+   561→##### **FR-13  —  Pemantauan Aset (Semakan Aset)** 
+   562→
+   563→Menjejak status semakan aset alih kerajaan termasuk lokasi, keadaan fizikal dan jadual semakan berkala. 
+   564→
+   565→##### **User Story:** 
+   566→
+   567→- Sebagai Pegawai Aset, saya ingin melihat senarai aset yang tertunggak semakan berkala supaya tindakan pematuhan dapat diambil. 
+   568→
+   569→##### **Medan Data Utama (Key Data Fields):** 
+   570→
+   571→|**Medan**|**Jenis Data**|**Keterangan**|
+   572→|---|---|---|
+   573→|asset_code|TEXT|Kod pendafaran aset (KEW.PA)|
+   574→|asset_name|TEXT|Nama aset|
+   575→|locaton|TEXT|Lokasi/Bilik|
+   576→
+   577→
+   578→
+   579→Muka Surat 13 daripada 28 
+   580→
+   581→_PRD — Sistem Dashboard Pemantauan Bersepadu JTM_ 
+   582→
+   583→|**Medan**|**Jenis Data**|**Keterangan**|
+   584→|---|---|---|
+   585→|conditon|TEXT|Baik/Rosak/Perlu Baiki|
+   586→|last_check_date|DATE|Tarikh semakan terakhir|
+   587→|next_check_date|DATE|Tarikh semakan seterusnya|
+   588→|status|TEXT|Terkini/Tertunggak|
+   589→
+   590→
+   591→
+   592→##### **Jadual Supabase:** `tbl_asset_monitoring` 
+   593→
+   594→**Visualisasi Dashboard:** Peta taburan aset mengikut lokasi, Senarai aset tertunggak semakan, Pecahan keadaan aset (pie chart). 
+   595→
+   596→**KPI:** _Peratus Pematuhan Semakan = (Aset disemak tepat masa / Jumlah aset) × 100%_ 
+   597→
+   598→##### **FR-14  —  Pemantauan Bilangan Komputer** 
+   599→
+   600→Memantau inventori komputer mengikut makmal/lokasi, status fungsi dan umur peralatan bagi tujuan perancangan penggantian. 
+   601→
+   602→##### **User Story:** 
+   603→
+   604→- Sebagai Pegawai ICT, saya ingin melihat bilangan komputer rosak/perlu diganti mengikut makmal untuk merancang bajet penggantian. 
+   605→
+   606→##### **Medan Data Utama (Key Data Fields):** 
+   607→
+   608→|**Medan**|**Jenis Data**|**Keterangan**|
+   609→|---|---|---|
+   610→|computer_id|UUID|Pengenal komputer|
+   611→|asset_tag|TEXT|Nombor tag aset|
+   612→|locaton|TEXT|Makmal/Lokasi|
+   613→|brand_model|TEXT|Jenama & Model|
+   614→|purchase_year|INT|Tahun pembelian|
+   615→|status|TEXT|Berfungsi/Rosak/Penyelenggaraan|
+   616→|os_version|TEXT|Versi sistem operasi|
+   617→
+   618→
+   619→
+   620→##### **Jadual Supabase:** `tbl_computer_inventory` 
+   621→
+   622→**Visualisasi Dashboard:** Bilangan mengikut status (kad ringkasan), Pecahan mengikut makmal, Senarai komputer melebihi 5 tahun (jadual penggantian). 
+   623→
+   624→**KPI:** _Peratus Komputer Berfungsi = (Berfungsi / Jumlah) × 100%_ 
+   625→
+   626→Muka Surat 14 daripada 28 
+   627→
+   628→_PRD — Sistem Dashboard Pemantauan Bersepadu JTM_ 
+   629→
+   630→### **5.  Reka Bentuk Pangkalan Data (Supabase)** 
+   631→
+   632→#### **5.1 Gambaran Keseluruhan Skema** 
+   633→
+   634→Pangkalan data direka menggunakan PostgreSQL (Supabase) dengan 14 jadual teras (satu bagi setiap modul), disokong oleh jadual rujukan (lookup) seperti tbl_program, tbl_staff dan tbl_session. Setiap jadual menggunakan uuid sebagai kunci primer, dilengkapi medan created_at/updated_at untuk audit trail. 
+   635→
+   636→|**Jadual**|**Modul Berkaitan**|
+   637→|---|---|
+   638→|tbl_enrolment_fulltme|FR-01 — Pemantauan Pengambilan & Enrolmen Pelajar Sepenuh Masa|
+   639→|tbl_customer_complaints|FR-02 — Pemantauan Aduan Pelanggan|
+   640→|tbl_program_accreditaton|FR-03 — Pentauliahan Program Sepenuh Masa|
+   641→|tbl_instructor_certfcaton|FR-04 — Sijil Kemahiran Malaysia (SKM) Pengajar DV|
+   642→|tbl_staf_training|FR-05 — Pemantauan Kursus Tahunan Kakitangan (40 Jam Setahun)|
+   643→|tbl_budget_mengurus|FR-06 — Pemantauan Perbelanjaan Bajet Mengurus (OS28000 & OS26000)|
+   644→|tbl_budget_pembangunan|FR-07 — Pemantauan Perbelanjaan Bajet Pembangunan (Penyelenggaraan/Naik<br>Taraf)|
+   645→|tbl_stock_verifcaton|FR-08 — Pemantauan Verifkasi Stok|
+   646→|tbl_short_course_enrolment|FR-09 — Enrolmen Peserta Kursus Jangka Pendek|
+   647→|tbl_graduates|FR-10 — Senarai Pelajar Sepenuh Masa Bergraduat|
+   648→|tbl_trust_account|FR-11 — Pemantauan Akaun Amanah (Perbelanjaan vs Pendapatan)|
+   649→|tbl_mengurus_account|FR-12 — Pemantauan Akaun Mengurus (Peratus Perbelanjaan)|
+   650→|tbl_asset_monitoring|FR-13 — Pemantauan Aset (Semakan Aset)|
+   651→|tbl_computer_inventory|FR-14 — Pemantauan Bilangan Komputer|
+   652→
+   653→
+   654→
+   655→#### **5.2 Dasar Keselamatan Row Level Security (RLS)** 
+   656→
+   657→- RLS diaktifkan (ENABLE ROW LEVEL SECURITY) pada SEMUA jadual tanpa pengecualian. 
+   658→
+   659→- Polisi 'SELECT' asas: pengguna hanya boleh melihat data mengikut peranan yang ditetapkan dalam jadual tbl_user_roles. 
+   660→
+   661→- Polisi 'INSERT/UPDATE': terhad kepada peranan Pegawai Input Data dan Pengurus Unit bagi modul berkaitan sahaja. 
+   662→
+   663→- Super Admin dikecualikan daripada sekatan RLS melalui semakan custom claim 'is_admin' pada JWT. 
+   664→
+   665→#### **5.3 Strategi Data Dummy (Seed Data)** 
+   666→
+   667→Bagi memenuhi keperluan demonstrasi dan pengujian sistem sebelum integrasi data sebenar, satu skrip 'seed.sql' akan disediakan untuk mengisi kesemua 14 jadual dengan data pura-pura (dummy) yang realistik — merangkumi sekurang-kurangnya 3 sesi pembelajaran, 20 rekod pelajar, 10 rekod aduan, 15 rekod aset dan seumpamanya — bagi membolehkan carta dan KPI dashboard dipaparkan dengan bermakna sejak hari pertama penempatan (deployment). 
+   668→
+   669→Contoh skrip SQL bagi penciptaan jadual dan data dummy disertakan dalam Lampiran B. Skrip penuh 14 jadual akan disediakan sebagai fail berasingan seed_dummy_data.sql semasa fasa pembangunan. 
+   670→
+   671→Muka Surat 15 daripada 28 
+   672→
+   673→_PRD — Sistem Dashboard Pemantauan Bersepadu JTM_ 
+   674→
+   675→#### **5.4 Fungsi & View Agregat** 
+   676→
+   677→View SQL disyorkan bagi mempercepatkan pengiraan KPI dashboard tanpa membebankan frontend: 
+   678→
+   679→```
+   680→create or replace view public.vw_enrolment_summary as
+   681→select session_name,
+   682→       sum(target_intake)   as total_target,
+   683→       sum(actual_enrolled) as total_enrolled,
+   684→       round(100.0 * sum(actual_enrolled) / nullif(sum(target_intake),0), 1) as
+   685→pct_achieved
+   686→from public.tbl_enrolment_fulltime
+   687→group by session_name
+   688→order by session_name;
+   689→```
+   690→
+   691→Muka Surat 16 daripada 28 
+   692→
+   693→_PRD — Sistem Dashboard Pemantauan Bersepadu JTM_ 
+   694→
+   695→### **6.  Reka Bentuk UI/UX — Glassmorphism** 
+   696→
+   697→#### **6.1 Prinsip Reka Bentuk** 
+   698→
+   699→- Kesan kaca legap separa (frosted-glass): latar belakang blur (backdrop-filter: blur(16-24px)) dengan kelegapan (opacity) 60-75% pada kad dan panel. 
+   700→
+   701→- Sempadan (border) halus 1px berwarna putih legap rendah (rgba(255,255,255,0.18)) untuk memberi ilusi tepi kaca. 
+   702→
+   703→- Bayang lembut (soft shadow) berlapis bagi kedalaman visual tanpa kesan berat. 
+   704→
+   705→- Latar belakang gradient dinamik (navy-ke-teal) di sebalik lapisan kaca bagi kontras optimum dan keterbacaan teks. 
+   706→
+   707→- Reka bentuk responsif sepenuhnya (mobile-first) — susun atur kad menyesuaikan diri dari 4 lajur (desktop) kepada 1 lajur (mobile). 
+   708→
+   709→- Mod Terang & Gelap (Light/Dark Mode) disokong sepenuhnya dengan pengekalan kesan kaca pada kedua-dua mod. 
+   710→
+   711→#### **6.2 Palet Warna & Tipografi** 
+   712→
+   713→|**Elemen**|**Nilai**|**Kegunaan**|
+   714→|---|---|---|
+   715→|Warna Primer|#0B2545 (Navy Deep)|Latar utama, teks tajuk|
+   716→|Warna Sekunder|#1B4B91 (Royal Blue)|Aksen, butang utama|
+   717→|Warna Aksen|#0E8388 (Teal)|Highlight, status positf|
+   718→|Warna Amaran|#C79A3B (Gold/Amber)|Status 'Akan Luput', amaran sederhana|
+   719→|Warna Kritkal|#D64545 (Red)|Status 'Luput'/'Kritkal'|
+   720→|Kaca (Glass Fill)|rgba(255,255,255,0.10–0.20)|Latar kad & panel|
+   721→|Fon Tajuk|Poppins / Inter — Semi Bold|Tajuk modul & KPI|
+   722→|Fon Kandungan|Inter / Calibri — Regular|Teks badan & jadual|
+   723→
+   724→
+   725→
+   726→#### **6.3 Komponen Utama Antara Muka** 
+   727→
+   728→- Kad KPI Kaca (Glass KPI Card): memaparkan satu metrik utama, ikon, nilai, dan penunjuk trend (naik/turun %). 
+   729→
+   730→- Panel Carta Kaca: bekas carta (Recharts) dengan latar kaca dan legend responsif. 
+   731→
+   732→- Bar Navigasi Sisi Terapung (Floating Glass Sidebar): senarai 14 modul dengan ikon, boleh kuncup (collapsible). 
+   733→
+   734→- Jadual Data Responsif: dengan penapis (filter), carian, dan eksport CSV/PDF bagi setiap modul. 
+   735→
+   736→- Komponen Amaran (Alert Badge): badge berwarna dinamik mengikut status ambang (threshold) — Hijau/Kuning/Merah. 
+   737→
+   738→- Panel 'AI Insight' (GLM 5.2): kad kaca khas memaparkan ringkasan naratif automatik dan ruang input soalan bahasa semula jadi. 
+   739→
+   740→#### **6.4 Susun Atur Halaman Utama (Landing Layout)** 
+   741→
+   742→```
+   743→ ┌──────────┬──────────────────────────────────────────────┐
+   744→ │  LOGO    │   Tajuk: Dashboard Pemantauan Bersepadu JTM   │
+   745→ │  JTM     │                              [Profil] [Notis] │
+   746→ ├──────────┼──────────────────────────────────────────────┤
+   747→```
+   748→
+   749→Muka Surat 17 daripada 28 
+   750→
+   751→_PRD — Sistem Dashboard Pemantauan Bersepadu JTM_ 
+   752→
+   753→|`│ Sidebar  │  ┌──── AI Insight Panel (Glass) ────────────┐ │`<br>`│ (Glass)  │  │ "Enrolmen sesi ini meningkat 6%..."       │ │`<br>`│          │  └───────────────────────────────────────────┘ │`|
+   754→|---|
+   755→|<br>`│ • FR-01  │  ┌──────┐┌──────┐┌──────┐┌──────┐               │`<br>`│ • FR-02  │  │KPI 1 ││KPI 2 ││KPI 3 ││KPI 4 │  (Glass Cards)│`<br>`│ • FR-03  │  └──────┘└──────┘└──────┘└──────┘               │`<br>|
+   756→|`│ ...      │  ┌────────────────┐  ┌────────────────┐        │`<br>`│ • FR-14  │  │  Carta Trend   │  │  Carta Status  │        │`<br>`│          │  └────────────────┘  └────────────────┘        │`<br>`└──────────┴──────────────────────────────────────────────┘`|
+   757→
+   758→
+   759→
+   760→Muka Surat 18 daripada 28 
+   761→
+   762→_PRD — Sistem Dashboard Pemantauan Bersepadu JTM_ 
+   763→
+   764→### **7.  Keperluan Bukan Fungsian** 
+   765→
+   766→|**Kategori**|**Keperluan**|
+   767→|---|---|
+   768→|Keselamatan|Pengesahan JWT melalui Supabase Auth, RLS pada semua jadual, penyulitan HTTPS/TLS<br>1.3 end-to-end, kunci API GLM 5.2 disimpan di Edge Functon sahaja.|
+   769→|Prestasi|Masa muat halaman < 2.5 saat (First Contentul Paint) pada rangkaian 4G; carta dimuat<br>secara lazy-load.|
+   770→|Kebolehskalaan|Seni bina serverless (Supabase + Netlify Functons) membolehkan penskalaan automatk<br>mengikut beban.|
+   771→|Ketersediaan|Sasaran waktu operasi (uptme) 99.5% menerusi SLA Netlify & Supabase managed<br>hostng.|
+   772→|Kebolehcapaian<br>(Accessibility)|Pematuhan asas WCAG 2.1 AA — kontras warna mencukupi walaupun pada kesan kaca<br>legap.|
+   773→|Pematuhan Data|Selari dengan Akta Perlindungan Data Peribadi (PDPA) 2010 bagi pengendalian data<br>pelajar & kakitangan.|
+   774→|Kebolehselenggaraan|Kod sumber diselenggara mengikut struktur modular (component-based) dengan<br>dokumentasi README bagi setap modul.|
+   775→|Log & Audit Trail|Setap transaksi CUD (Create/Update/Delete) direkod dalam jadual tbl_audit_log dengan<br>id pengguna & cap masa.|
+   776→
+   777→
+   778→
+   779→Muka Surat 19 daripada 28 
+   780→
+   781→_PRD — Sistem Dashboard Pemantauan Bersepadu JTM_ 
+   782→
+   783→### **8.  Pelan Penempatan (Deployment Plan)** 
+   784→
+   785→#### **8.1 Persekitaran Supabase** 
+   786→
+   787→- Cipta projek Supabase baharu (Region: Singapore — ap-southeast-1 untuk kependaman rendah dari Malaysia). 
+   788→
+   789→- Jalankan skrip migrasi schema.sql untuk mencipta 14 jadual teras + jadual rujukan. 
+   790→
+   791→- Jalankan skrip seed_dummy_data.sql untuk mengisi data dummy awal. 
+   792→
+   793→- Konfigurasikan dasar RLS bagi setiap jadual mengikut Bahagian 5.2. 
+   794→
+   795→- Aktifkan Supabase Auth (Email/Password) dan konfigurasikan templat e-mel dalam Bahasa Malaysia. 
+   796→
+   797→- Cipta Edge Function 'ai-insight' untuk pengendalian panggilan API z.ai GLM 5.2 secara selamat di sisi pelayan. 
+   798→
+   799→#### **8.2 Persekitaran Netlify** 
+   800→
+   801→- Sambungkan repositori Git (GitHub) projek frontend ke Netlify melalui 'Import from Git'. 
+   802→
+   803→- Konfigurasikan Build Command: npm run build; Publish Directory: dist/ atau .next/ (mengikut framework dipilih). 
+   804→
+   805→- Tetapkan pembolehubah persekitaran (Environment Variables) di Netlify: VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY (kunci awam sahaja). 
+   806→
+   807→- Aktifkan 'Deploy Previews' automatik bagi setiap Pull Request untuk semakan sebelum penggabungan (merge) ke cawangan utama (main). 
+   808→
+   809→- Konfigurasikan domain kustom (contoh: dashboard.jtm.gov.my) dengan sijil SSL percuma Netlify (Let's Encrypt). 
+   810→
+   811→- Aktifkan Netlify Forms/Functions sekiranya diperlukan bagi ciri tambahan seperti notifikasi e-mel. 
+   812→
+   813→#### **8.3 Aliran Kerja CI/CD** 
+   814→
+   815→```
+   816→  Developer Push → GitHub (branch: feature/*)
+   817→        │
+   818→        ▼
+   819→  Netlify Auto-Build (npm install → npm run build)
+   820→        │
+   821→        ▼
+   822→  Deploy Preview URL dijana → Semakan QA/UAT
+   823→        │  (selepas kelulusan)
+   824→        ▼
+   825→  Merge ke 'main' → Netlify Production Deploy
+   826→        │
+   827→        ▼
+   828→  Sistem Langsung (Live) di domain pengeluaran
+   829→```
+   830→
+   831→Muka Surat 20 daripada 28 
+   832→
+   833→_PRD — Sistem Dashboard Pemantauan Bersepadu JTM_ 
+   834→
+   835→### **9.  Pelan Pengujian (Testing Plan)** 
+   836→
+   837→|**Jenis Ujian**|**Skop**|**Alat/Kaedah**|
+   838→|---|---|---|
+   839→|Ujian Unit|Fungsi pengiraan KPI & komponen React individu|Vitest / Jest|
+   840→|Ujian Integrasi|Interaksi frontend ↔ Supabase API|Playwright / Postman|
+   841→|Ujian RLS Keselamatan|Sahkan setap peranan hanya capai data<br>dibenarkan|Manual + Automated Test Script|
+   842→|Ujian Responsif UI|Kesahihan kesan Glassmorphism merentasi<br>perant|BrowserStack / Chrome DevTools|
+   843→|Ujian Prestasi|Beban serentak & masa tndak balas dashboard|Lighthouse / k6|
+   844→|Ujian Penerimaan<br>Pengguna (UAT)|Pengesahan oleh wakil setap Bahagian<br>(Akademik, Kewangan, Aset, ICT)|Sesi UAT berstruktur|
+   845→
+   846→
+   847→
+   848→Muka Surat 21 daripada 28 
+   849→
+   850→_PRD — Sistem Dashboard Pemantauan Bersepadu JTM_ 
+   851→
+   852→### **10.  Garis Masa Projek & Pencapaian Utama** 
+   853→
+   854→|**Fasa**|**Aktvit Utama**|**Tempoh Anggaran**|
+   855→|---|---|---|
+   856→|Fasa 0|Persediaan projek: setup Supabase, Netlify, repositori Git, kelulusan PRD|Minggu 1|
+   857→|Fasa 1|Reka bentuk skema pangkalan data & UI/UX Glassmorphism (wireframe &<br>prototaip)|Minggu 2–3|
+   858→|Fasa 2|Pembangunan 14 modul dashboard (menggunakan z.ai GLM 5.2 sebagai<br>enjin bantuan pembangunan)|Minggu 4–8|
+   859→|Fasa 3|Integrasi data dummy, panel AI Insight, dan RLS keselamatan|Minggu 9–10|
+   860→|Fasa 4|Ujian QA menyeluruh (unit, integrasi, keselamatan, prestasi)|Minggu 11|
+   861→|Fasa 5|UAT bersama pemegang taruh & pembetulan (bug-fxing)|Minggu 12|
+   862→|Fasa 6|Penempatan produksi ke Netlify & serah terima sistem|Minggu 13|
+   863→
+   864→
+   865→
+   866→Muka Surat 22 daripada 28 
+   867→
+   868→_PRD — Sistem Dashboard Pemantauan Bersepadu JTM_ 
+   869→
+   870→### **11.  Risiko & Strategi Mitigasi** 
+   871→
+   872→|**Risiko**|**Impak**|**Mitgasi**|
+   873→|---|---|---|
+   874→|Kelewatan pembekalan data<br>sebenar daripada Bahagian<br>berkaitan|Sederhana|Gunakan data dummy realistk semasa fasa pembangunan<br>& UAT; integrasi data sebenar dijadualkan berasingan|
+   875→|Had kuota/kos panggilan API z.ai<br>GLM 5.2|Rendah–Sederhana|Cache respons AI Insight (contoh: kemas kini setap 6 jam,<br>bukan setap muat halaman) untuk kawal kos|
+   876→|Kebocoran data akibat konfgurasi<br>RLS tdak lengkap|Tinggi|Semakan keselamatan (security review) wajib sebelum<br>setap deployment produksi|
+   877→|Prestasi terjejas pada perant<br>mudah alih akibat kesan blur<br>Glassmorphism|Rendah|Optmum backdrop-flter & sediakan fallback solid-color<br>bagi perant prestasi rendah|
+   878→|Pertndihan skop dengan sistem<br>legasi sedia ada|Sederhana|Pemetaan skop jelas dalam Bahagian 1.3; libatkan pemilik<br>sistem legasi awal projek|
+   879→
+   880→
+   881→
+   882→Muka Surat 23 daripada 28 
+   883→
+   884→_PRD — Sistem Dashboard Pemantauan Bersepadu JTM_ 
+   885→
+   886→### **12.  Lampiran** 
+   887→
+   888→#### **Lampiran A — Rumusan 14 Modul Dashboard** 
+   889→
+   890→|**Kod**|**Modul**|
+   891→|---|---|
+   892→|FR-01|Pemantauan Pengambilan & Enrolmen Pelajar Sepenuh Masa|
+   893→|FR-02|Pemantauan Aduan Pelanggan|
+   894→|FR-03|Pentauliahan Program Sepenuh Masa|
+   895→|FR-04|Sijil Kemahiran Malaysia (SKM) Pengajar DV|
+   896→|FR-05|Pemantauan Kursus Tahunan Kakitangan (40 Jam Setahun)|
+   897→|FR-06|Pemantauan Perbelanjaan Bajet Mengurus (OS28000 & OS26000)|
+   898→|FR-07|Pemantauan Perbelanjaan Bajet Pembangunan (Penyelenggaraan/Naik Taraf)|
+   899→|FR-08|Pemantauan Verifkasi Stok|
+   900→|FR-09|Enrolmen Peserta Kursus Jangka Pendek|
+   901→|FR-10|Senarai Pelajar Sepenuh Masa Bergraduat|
+   902→|FR-11|Pemantauan Akaun Amanah (Perbelanjaan vs Pendapatan)|
+   903→|FR-12|Pemantauan Akaun Mengurus (Peratus Perbelanjaan)|
+   904→|FR-13|Pemantauan Aset (Semakan Aset)|
+   905→|FR-14|Pemantauan Bilangan Komputer|
+   906→
+   907→
+   908→
+   909→#### **Lampiran B — Contoh Skrip SQL (Skema & Data Dummy)** 
+   910→
+   911→Contoh berikut menggambarkan corak (pattern) yang akan digunakan bagi kesemua 14 jadual. Skrip penuh akan disediakan dalam fail berasingan semasa fasa pembangunan. 
+   912→
+   913→```
+   914→-- ============================================================
+   915→-- DUMMY / SEED DATA — Sistem Dashboard Pemantauan Bersepadu
+   916→-- Skema: public | Platform: Supabase (PostgreSQL 15)
+   917→```
+   918→
+   919→```
+   920→-- ============================================================
+   921→```
+   922→
+   923→```
+   924→create table public.tbl_enrolment_fulltime (
+   925→  id uuid primary key default gen_random_uuid(),
+   926→  session_name text not null,
+   927→  program_id uuid references public.tbl_program(id),
+   928→  target_intake int not null default 0,
+   929→  actual_enrolled int not null default 0,
+   930→  center_name text,
+   931→  gender_male int default 0,
+   932→  gender_female int default 0,
+   933→  created_at timestamptz default now()
+   934→);
+   935→```
+   936→
+   937→```
+   938→insert into public.tbl_enrolment_fulltime
+   939→  (session_name, target_intake, actual_enrolled, center_name, gender_male,
+   940→gender_female)
+   941→values
+   942→  ('Sesi Jun 2026', 120, 108, 'ILP Kuala Lumpur', 70, 38),
+   943→  ('Sesi Disember 2025', 100, 96, 'ILP Kuala Lumpur', 60, 36),
+   944→  ('Sesi Jun 2025', 110, 82, 'ILP Selayang', 55, 27);
+   945→```
+   946→
+   947→Muka Surat 24 daripada 28 
+   948→
+   949→_PRD — Sistem Dashboard Pemantauan Bersepadu JTM_ 
+   950→
+   951→```
+   952→create table public.tbl_customer_complaints (
+   953→  id uuid primary key default gen_random_uuid(),
+   954→  date_received date not null,
+   955→  category text not null,
+   956→  status text not null default 'Baharu',
+   957→  date_resolved date,
+   958→  response_time_hours numeric,
+   959→  sla_target_hours numeric default 72,
+   960→  complainant_type text,
+   961→  created_at timestamptz default now()
+   962→);
+   963→insert into public.tbl_customer_complaints
+   964→  (date_received, category, status, date_resolved, response_time_hours,
+   965→complainant_type)
+   966→values
+   967→  ('2026-06-02','Akademik','Selesai','2026-06-04', 48, 'Pelajar'),
+   968→  ('2026-06-10','Kemudahan','Dalam Tindakan', null, null, 'Ibu Bapa'),
+   969→  ('2026-06-18','Kewangan','Selesai','2026-06-19', 24, 'Pelajar');
+   970→```
+   971→
+   972→```
+   973→create table public.tbl_instructor_certification (
+   974→  id uuid primary key default gen_random_uuid(),
+   975→  full_name text not null,
+   976→  department text,
+   977→  cert_level text check (cert_level in ('SKM3','DKM','DLKM')),
+   978→  cert_no text,
+   979→  issue_date date,
+   980→  expiry_date date,
+   981→  created_at timestamptz default now()
+   982→);
+   983→insert into public.tbl_instructor_certification
+   984→  (full_name, department, cert_level, cert_no, issue_date)
+   985→values
+   986→  ('Ahmad Bin Zulkifli','Teknologi Automotif','DKM','DKM-2023-0451','2023-03-14'),
+   987→  ('Nurul Aini Binti Hassan','Teknologi Elektrik','SKM3','SKM3-2022-1187','2022-08-
+   988→02'),
+   989→  ('Rajesh a/l Kumar','Teknologi Maklumat','DLKM','DLKM-2024-0092','2024-01-20');
+   990→```
+   991→
+   992→```
+   993→create table public.tbl_asset_monitoring (
+   994→  id uuid primary key default gen_random_uuid(),
+   995→  asset_code text unique not null,
+   996→  asset_name text not null,
+   997→  location text,
+   998→  condition text check (condition in ('Baik','Perlu Baiki','Rosak')),
+   999→  last_check_date date,
+  1000→  next_check_date date,
+  1001→  created_at timestamptz default now()
+  1002→);
+  1003→insert into public.tbl_asset_monitoring
+  1004→  (asset_code, asset_name, location, condition, last_check_date, next_check_date)
+  1005→values
+  1006→  ('KEW.PA-0231','Projektor LCD','Bilik Kuliah A1','Baik','2026-01-10','2026-07-10'),
+  1007→  ('KEW.PA-0455','Mesin Kimpalan CNC','Makmal Kimpalan 2','Perlu Baiki','2025-12-
+  1008→05','2026-06-05'),
+  1009→```
+  1010→
+  1011→Muka Surat 25 daripada 28 
+  1012→
+  1013→_PRD — Sistem Dashboard Pemantauan Bersepadu JTM_ 
+  1014→
+  1015→```
+  1016→  ('KEW.PA-0678','Penghawa Dingin 2HP','Pejabat Pentadbiran','Baik','2026-02-
+  1017→18','2026-08-18');
+  1018→```
+  1019→
+  1020→#### **Lampiran C — Senarai Singkatan** 
+  1021→
+  1022→Rujuk Bahagian 1.4 — Definisi & Akronim. 
+  1023→
+  1024→_— Tamat Dokumen PRD —_ 
+  1025→
+  1026→Muka Surat 26 daripada 28 
+  1027→
+  1028→

@@ -1,0 +1,363 @@
+// Prisma schema — Sistem Dashboard Pemantauan Bersepadu JTM
+// Mirrors the Supabase (PostgreSQL) schema defined in the PRD.
+// 14 core tables (tbl_*) + lookup tables (tbl_program, tbl_staff, tbl_session).
+// SQLite is used locally as the "real backend" while preserving the Supabase table/field structure.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================
+// LOOKUP / REFERENCE TABLES
+// ============================================================
+
+model TblProgram {
+  id           String   @id @default(cuid())
+  programCode  String   @unique
+  programName  String
+  field        String?  // Bidang e.g. Teknologi Automotif
+  level        String?  // SKM3 / DKM / DLKM
+  durationMnth Int?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  enrolments       TblEnrolmentFulltime[]
+  accreditations   TblProgramAccreditation[]
+  graduates        TblGraduate[]
+  shortCourses     TblShortCourseEnrolment[]
+}
+
+
+model TblStaff {
+  id         String   @id @default(cuid())
+  staffNo    String   @unique
+  fullName   String
+  department String?
+  position   String?
+  email      String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  training TblStaffTraining[]
+}
+
+
+model TblSession {
+  id          String   @id @default(cuid())
+  sessionName String   @unique // e.g. "Sesi Jun 2026"
+  startDate   DateTime?
+  endDate     DateTime?
+  createdAt   DateTime @default(now())
+
+  enrolments TblEnrolmentFulltime[]
+}
+
+model TblTrainingCenter {
+  id         String   @id @default(cuid())
+  centerCode String   @unique
+  centerName String
+  state      String?
+  createdAt  DateTime @default(now())
+}
+
+// ============================================================
+// FR-01 — Pemantauan Pengambilan & Enrolmen Pelajar Sepenuh Masa
+// Supabase table: tbl_enrolment_fulltime
+// ============================================================
+
+model TblEnrolmentFulltime {
+  id              String   @id @default(cuid())
+  sessionId       String?
+  sessionName     String
+  programId       String?
+  targetIntake    Int      @default(0)
+  actualEnrolled  Int      @default(0)
+  centerName      String
+  genderMale      Int      @default(0)
+  genderFemale    Int      @default(0)
+  createdAt       DateTime @default(now())
+
+  session TblSession? @relation(fields: [sessionId], references: [id])
+  program TblProgram? @relation(fields: [programId], references: [id])
+
+  @@map("tbl_enrolment_fulltime")
+}
+
+// ============================================================
+// FR-02 — Pemantauan Aduan Pelanggan
+// Supabase table: tbl_customer_complaints
+// ============================================================
+
+model TblCustomerComplaint {
+  id                String    @id @default(cuid())
+  complaintRef      String    @unique
+  dateReceived      DateTime
+  category          String    // Akademik / Kemudahan / Kewangan / ICT
+  status            String    @default("Baharu") // Baharu / Dalam Tindakan / Selesai
+  dateResolved      DateTime?
+  responseTimeHours Float?
+  slaTargetHours    Float     @default(72)
+  complainantType   String?   // Pelajar / Ibu Bapa / Majikan / Awam
+  description       String?
+  createdAt         DateTime  @default(now())
+
+  @@map("tbl_customer_complaints")
+}
+
+// ============================================================
+// FR-03 — Pentauliahan Program Sepenuh Masa
+// Supabase table: tbl_program_accreditation
+// ============================================================
+
+model TblProgramAccreditation {
+  id               String    @id @default(cuid())
+  programId        String?
+  programName      String
+  accreditationBody String?  // JPK / MQA / others
+  certNo           String?
+  startDate        DateTime?
+  expiryDate       DateTime?
+  status           String    @default("Aktif") // Aktif / Akan Luput / Luput
+  createdAt        DateTime  @default(now())
+
+  program TblProgram? @relation(fields: [programId], references: [id])
+
+  @@map("tbl_program_accreditation")
+}
+
+// ============================================================
+// FR-04 — Sijil Kemahiran Malaysia (SKM) Pengajar DV
+// Supabase table: tbl_instructor_certification
+// ============================================================
+
+model TblInstructorCertification {
+  id          String    @id @default(cuid())
+  instructorId String?
+  fullName    String
+  department  String?
+  certLevel   String?   // SKM3 / DKM / DLKM
+  certNo      String?
+  issueDate   DateTime?
+  expiryDate  DateTime?
+  createdAt   DateTime  @default(now())
+
+  @@map("tbl_instructor_certification")
+}
+
+// ============================================================
+// FR-05 — Pemantauan Kursus Tahunan Kakitangan (40 Jam Setahun)
+// Supabase table: tbl_staff_training
+// ============================================================
+
+model TblStaffTraining {
+  id             String   @id @default(cuid())
+  staffId        String?
+  fullName       String
+  department     String?
+  year           Int
+  hoursCompleted Float    @default(0)
+  targetHours    Float    @default(40)
+  lastCourseDate DateTime?
+  createdAt      DateTime @default(now())
+
+  staff TblStaff? @relation(fields: [staffId], references: [id])
+
+  @@map("tbl_staff_training")
+}
+
+// ============================================================
+// FR-06 — Pemantauan Perbelanjaan Bajet Mengurus (OS28000 & OS26000)
+// Supabase table: tbl_budget_mengurus
+// ============================================================
+
+model TblBudgetMengurus {
+  id         String   @id @default(cuid())
+  budgetCode String   // OS28000 / OS26000
+  month      DateTime
+  allocation Float    @default(0)
+  spent      Float    @default(0)
+  balance    Float    @default(0)
+  remarks    String?
+  createdAt  DateTime @default(now())
+
+  @@map("tbl_budget_mengurus")
+}
+
+// ============================================================
+// FR-07 — Pemantauan Perbelanjaan Bajet Pembangunan
+// Supabase table: tbl_budget_pembangunan
+// ============================================================
+
+model TblBudgetPembangunan {
+  id            String   @id @default(cuid())
+  projectId     String?
+  projectName   String
+  category      String   // Penyelenggaraan / Naik Taraf
+  allocation    Float    @default(0)
+  spent         Float    @default(0)
+  completionPct Float    @default(0)
+  status        String   @default("Belum Mula") // Belum Mula / Dalam Pelaksanaan / Siap
+  targetDate    DateTime?
+  createdAt     DateTime @default(now())
+
+  @@map("tbl_budget_pembangunan")
+}
+
+// ============================================================
+// FR-08 — Pemantauan Verifikasi Stok
+// Supabase table: tbl_stock_verification
+// ============================================================
+
+model TblStockVerification {
+  id          String    @id @default(cuid())
+  itemCode    String
+  itemName    String
+  systemQty   Int       @default(0)
+  physicalQty Int       @default(0)
+  variance    Int       @default(0)
+  verifiedBy  String?
+  verifyDate  DateTime?
+  status      String    @default("Sepadan") // Sepadan / Percanggahan
+  category    String?
+  createdAt   DateTime  @default(now())
+
+  @@map("tbl_stock_verification")
+}
+
+// ============================================================
+// FR-09 — Enrolmen Peserta Kursus Jangka Pendek
+// Supabase table: tbl_short_course_enrolment
+// ============================================================
+
+model TblShortCourseEnrolment {
+  id              String    @id @default(cuid())
+  courseId        String?
+  courseName      String
+  programId       String?
+  sessionDate     DateTime
+  capacity        Int       @default(0)
+  participantCount Int      @default(0)
+  category        String    // Awam / Korporat
+  revenue         Float     @default(0)
+  createdAt       DateTime  @default(now())
+
+  program TblProgram? @relation(fields: [programId], references: [id])
+
+  @@map("tbl_short_course_enrolment")
+}
+
+// ============================================================
+// FR-10 — Senarai Pelajar Sepenuh Masa Bergraduat
+// Supabase table: tbl_graduates
+// ============================================================
+
+model TblGraduate {
+  id               String    @id @default(cuid())
+  studentId        String?
+  fullName         String
+  programId        String?
+  sessionName      String
+  graduationDate   DateTime?
+  finalGrade       String?
+  employmentStatus String?   // Bekerja / Belum Bekerja / Melanjut Pelajaran
+  createdAt        DateTime  @default(now())
+
+  program TblProgram? @relation(fields: [programId], references: [id])
+
+  @@map("tbl_graduates")
+}
+
+// ============================================================
+// FR-11 — Pemantauan Akaun Amanah (Perbelanjaan vs Pendapatan)
+// Supabase table: tbl_trust_account
+// ============================================================
+
+model TblTrustAccount {
+  id              String    @id @default(cuid())
+  transactionType String    // Income / Expense
+  category        String?
+  amount          Float     @default(0)
+  transactionDate DateTime
+  runningBalance  Float     @default(0)
+  description     String?
+  createdAt       DateTime  @default(now())
+
+  @@map("tbl_trust_account")
+}
+
+// ============================================================
+// FR-12 — Pemantauan Akaun Mengurus (Peratus Perbelanjaan)
+// Supabase table: tbl_mengurus_account
+// ============================================================
+
+model TblMengurusAccount {
+  id           String   @id @default(cuid())
+  accountCode  String
+  accountName  String
+  allocation   Float    @default(0)
+  spent        Float    @default(0)
+  month        DateTime
+  createdAt    DateTime @default(now())
+
+  @@map("tbl_mengurus_account")
+}
+
+// ============================================================
+// FR-13 — Pemantauan Aset (Semakan Aset)
+// Supabase table: tbl_asset_monitoring
+// ============================================================
+
+model TblAssetMonitoring {
+  id            String    @id @default(cuid())
+  assetCode     String    @unique
+  assetName     String
+  location      String?
+  condition     String    @default("Baik") // Baik / Rosak / Perlu Baiki
+  lastCheckDate DateTime?
+  nextCheckDate DateTime?
+  status        String    @default("Terkini") // Terkini / Tertunggak
+  category      String?
+  createdAt     DateTime  @default(now())
+
+  @@map("tbl_asset_monitoring")
+}
+
+// ============================================================
+// FR-14 — Pemantauan Bilangan Komputer
+// Supabase table: tbl_computer_inventory
+// ============================================================
+
+model TblComputerInventory {
+  id            String   @id @default(cuid())
+  computerId    String?
+  assetTag      String   @unique
+  location      String?  // Makmal / Lokasi
+  brandModel    String?
+  purchaseYear  Int?
+  status        String   @default("Berfungsi") // Berfungsi / Rosak / Penyelenggaraan
+  osVersion     String?
+  createdAt     DateTime @default(now())
+
+  @@map("tbl_computer_inventory")
+}
+
+// ============================================================
+// AUDIT LOG (per PRD section 7 — non-functional: audit trail)
+// ============================================================
+
+model TblAuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  action    String   // CREATE / UPDATE / DELETE
+  module    String?
+  recordId  String?
+  detail    String?
+  createdAt DateTime @default(now())
+
+  @@map("tbl_audit_log")
+}
