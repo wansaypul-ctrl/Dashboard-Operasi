@@ -47,8 +47,8 @@ export function AiInsightPanel() {
   return (
     <div className="glass-card relative overflow-hidden p-4 sm:p-5">
       {/* Decorative glow */}
-      <div className="pointer-events-none absolute -left-10 -top-10 h-40 w-40 rounded-full bg-[#0e8388]/30 blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-10 -right-10 h-40 w-40 rounded-full bg-[#1b4b91]/30 blur-3xl" />
+      <div className="pointer-events-none absolute -left-10 -top-10 h-40 w-40 rounded-full bg-[#0e8388]/25 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-10 -right-10 h-40 w-40 rounded-full bg-[#1b4b91]/25 blur-3xl" />
 
       <div className="relative">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
@@ -57,8 +57,8 @@ export function AiInsightPanel() {
               <Sparkles className="h-5 w-5 text-white" />
             </div>
             <div>
-              <h3 className="font-display text-base font-bold text-white">AI Insight Generator</h3>
-              <p className="text-[11px] text-teal-200/80">Dikuasakan oleh z.ai GLM 5.2 · Bahasa Malaysia</p>
+              <h3 className="font-display text-base font-bold text-jtm-navy">AI Insight Generator</h3>
+              <p className="text-[11px] text-teal-700">Dikuasakan oleh z.ai GLM 5.2 · Bahasa Malaysia</p>
             </div>
           </div>
           <button
@@ -73,13 +73,13 @@ export function AiInsightPanel() {
 
         {/* Question form */}
         <form onSubmit={onSubmit} className="mb-3 flex items-center gap-2">
-          <div className="flex flex-1 items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 py-2 focus-within:border-teal-400/60">
-            <Bot className="h-4 w-4 shrink-0 text-teal-300" />
+          <div className="flex flex-1 items-center gap-2 rounded-xl border border-slate-900/10 bg-white/60 px-3 py-2 focus-within:border-teal-400/60">
+            <Bot className="h-4 w-4 shrink-0 text-teal-600" />
             <input
               value={question}
               onChange={(e) => setQuestion(e.target.value)}
               placeholder="Tanya dalam bahasa semula jadi… cth: Apakah trend enrolmen?"
-              className="flex-1 bg-transparent text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none"
+              className="flex-1 bg-transparent text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none"
             />
           </div>
           <button
@@ -99,7 +99,7 @@ export function AiInsightPanel() {
               <button
                 key={q}
                 onClick={() => generate(q)}
-                className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[11px] text-slate-300 transition hover:border-teal-400/40 hover:bg-teal-500/10 hover:text-white"
+                className="rounded-full border border-slate-900/10 bg-white/60 px-3 py-1.5 text-[11px] text-slate-600 transition hover:border-teal-400/40 hover:bg-teal-500/10 hover:text-teal-700"
               >
                 {q}
               </button>
@@ -109,7 +109,7 @@ export function AiInsightPanel() {
 
         {/* Output */}
         {error && (
-          <div className="flex items-start gap-2 rounded-lg border border-red-400/30 bg-red-500/10 p-3 text-xs text-rose-200">
+          <div className="flex items-start gap-2 rounded-lg border border-red-400/30 bg-red-500/10 p-3 text-xs text-rose-700">
             <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
             <span>{error}</span>
           </div>
@@ -125,18 +125,18 @@ export function AiInsightPanel() {
         )}
 
         {insight && (
-          <div className="animate-slide-up max-h-[420px] overflow-y-auto rounded-xl border border-white/10 bg-white/[0.03] p-4">
-            <div className="prose prose-invert prose-sm max-w-none prose-headings:font-display prose-headings:text-white prose-headings:font-semibold prose-p:text-slate-200 prose-li:text-slate-200 prose-strong:text-teal-200 prose-code:text-amber-200">
+          <div className="animate-slide-up max-h-[420px] overflow-y-auto rounded-xl border border-slate-900/10 bg-white/40 p-4">
+            <div className="prose prose-sm max-w-none">
               <ReactMarkdown>{insight}</ReactMarkdown>
             </div>
           </div>
         )}
 
         {!insight && !loading && !error && (
-          <div className="rounded-xl border border-dashed border-white/15 p-6 text-center">
-            <Sparkles className="mx-auto mb-2 h-8 w-8 text-teal-300/60" />
-            <p className="text-sm text-slate-300">
-              Klik <span className="font-semibold text-teal-200">"Jana Insight"</span> untuk mendapatkan
+          <div className="rounded-xl border border-dashed border-slate-900/15 bg-white/40 p-6 text-center">
+            <Sparkles className="mx-auto mb-2 h-8 w-8 text-teal-500/70" />
+            <p className="text-sm text-slate-600">
+              Klik <span className="font-semibold text-teal-700">"Jana Insight"</span> untuk mendapatkan
               ringkasan analitik automatik dashboard JTM oleh GLM 5.2.
             </p>
           </div>

@@ -18,7 +18,7 @@ export interface KpiCardData {
 export function KpiCard({ data, onClick, active }: { data: KpiCardData; onClick?: () => void; active?: boolean }) {
   const trendUp = data.trend > 0;
   const trendDown = data.trend < 0;
-  const trendColor = trendUp ? "text-emerald-300" : trendDown ? "text-rose-300" : "text-slate-400";
+  const trendColor = trendUp ? "text-emerald-600" : trendDown ? "text-rose-500" : "text-slate-400";
   const accent = data.accent || "#0e8388";
 
   return (
@@ -42,28 +42,28 @@ export function KpiCard({ data, onClick, active }: { data: KpiCardData; onClick?
           </span>
           <span
             className="rounded-md px-1.5 py-0.5 text-[10px] font-bold"
-            style={{ background: `${accent}22`, color: accent }}
+            style={{ background: `${accent}1f`, color: accent }}
           >
             {data.pct}%
           </span>
         </div>
 
-        <p className="mb-2 line-clamp-2 min-h-[34px] font-display text-[13px] font-semibold leading-tight text-slate-100">
+        <p className="mb-2 line-clamp-2 min-h-[34px] font-display text-[13px] font-semibold leading-tight text-jtm-navy">
           {data.title}
         </p>
 
         <div className="mb-1 flex items-baseline gap-1">
-          <span className="font-display text-2xl font-extrabold tracking-tight text-white sm:text-[28px]">
+          <span className="font-display text-2xl font-extrabold tracking-tight text-slate-900 sm:text-[28px]">
             {data.isCurrency ? "RM " : ""}
             {formatValue(data.value)}
           </span>
-          <span className="text-xs text-slate-400">{data.unit}</span>
+          <span className="text-xs text-slate-500">{data.unit}</span>
         </div>
 
-        <p className="mb-3 line-clamp-1 text-[11px] text-slate-400">{data.subtitle}</p>
+        <p className="mb-3 line-clamp-1 text-[11px] text-slate-500">{data.subtitle}</p>
 
         {/* Mini progress bar */}
-        <div className="mb-2 h-1.5 w-full overflow-hidden rounded-full bg-white/10">
+        <div className="mb-2 h-1.5 w-full overflow-hidden rounded-full bg-slate-900/10">
           <div
             className="h-full rounded-full transition-all duration-700"
             style={{
@@ -82,7 +82,7 @@ export function KpiCard({ data, onClick, active }: { data: KpiCardData; onClick?
             {data.trend}
             {data.isCurrency && trendUp ? "k" : ""}
           </span>
-          <span className="text-slate-500">vs sebelum</span>
+          <span className="text-slate-400">vs sebelum</span>
         </div>
       </div>
     </button>

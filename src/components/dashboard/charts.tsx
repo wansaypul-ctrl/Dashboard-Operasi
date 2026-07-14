@@ -21,8 +21,8 @@ import {
   AreaChart,
 } from "recharts";
 
-const AXIS = { fill: "#9bb3d4", fontSize: 11 };
-const GRID = "rgba(255,255,255,0.08)";
+const AXIS = { fill: "#5b7a99", fontSize: 11 };
+const GRID = "rgba(15,41,66,0.08)";
 
 const PALETTE = ["#0e8388", "#1b4b91", "#c79a3b", "#2e9e6b", "#d64545", "#7c5cff"];
 
@@ -39,8 +39,8 @@ export function ChartCard({ title, subtitle, children, className, action }: Char
     <div className={`glass-card flex flex-col p-4 sm:p-5 ${className ?? ""}`}>
       <div className="mb-3 flex items-start justify-between gap-2">
         <div className="min-w-0">
-          <h3 className="font-display text-sm font-semibold text-white">{title}</h3>
-          {subtitle && <p className="mt-0.5 text-[11px] text-slate-400">{subtitle}</p>}
+          <h3 className="font-display text-sm font-semibold text-jtm-navy">{title}</h3>
+          {subtitle && <p className="mt-0.5 text-[11px] text-slate-500">{subtitle}</p>}
         </div>
         {action}
       </div>
@@ -53,12 +53,12 @@ function ChartTooltip({ active, payload, label }: any) {
   if (!active || !payload?.length) return null;
   return (
     <div className="glass-strong rounded-lg px-3 py-2 text-xs shadow-xl">
-      {label && <p className="mb-1 font-medium text-white">{label}</p>}
+      {label && <p className="mb-1 font-medium text-jtm-navy">{label}</p>}
       {payload.map((p: any, i: number) => (
         <div key={i} className="flex items-center gap-2">
           <span className="h-2 w-2 rounded-full" style={{ background: p.color || p.fill }} />
-          <span className="text-slate-300">{p.name}:</span>
-          <span className="font-semibold text-white">
+          <span className="text-slate-600">{p.name}:</span>
+          <span className="font-semibold text-slate-900">
             {typeof p.value === "number" ? p.value.toLocaleString("en-MY") : p.value}
           </span>
         </div>
@@ -280,12 +280,12 @@ export function GaugeChart({
         endAngle={-40}
       >
         <PolarAngleAxis type="number" domain={[0, 100]} tick={false} />
-        <RadialBar background={{ fill: "rgba(255,255,255,0.08)" }} dataKey="value" cornerRadius={10} fill={color} />
-        <text x="50%" y="52%" textAnchor="middle" dominantBaseline="middle" fill="#ffffff" fontSize="28" fontWeight="800" fontFamily="Poppins, sans-serif">
+        <RadialBar background={{ fill: "rgba(15,41,66,0.08)" }} dataKey="value" cornerRadius={10} fill={color} />
+        <text x="50%" y="52%" textAnchor="middle" dominantBaseline="middle" fill="#0b2545" fontSize="28" fontWeight="800" fontFamily="Poppins, sans-serif">
           {value}%
         </text>
         {label && (
-          <text x="50%" y="72%" textAnchor="middle" dominantBaseline="middle" fill="#9bb3d4" fontSize="11">
+          <text x="50%" y="72%" textAnchor="middle" dominantBaseline="middle" fill="#5b7a99" fontSize="11">
             {label}
           </text>
         )}

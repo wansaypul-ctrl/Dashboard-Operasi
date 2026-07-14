@@ -127,3 +127,41 @@ Stage Summary:
 - Deliverables: working Next.js 16 dashboard at `/` (preview panel), seeded Prisma DB (SQLite mirroring Supabase tbl_* schema), 14 module views with charts + tables, GLM 5.2 AI Insight panel (server-side), glassmorphism UI per PRD §6, responsive mobile-first, CSV export.
 - PRD PDF (Task 1) at `/home/z/my-project/download/PRD_Sistem_Dashboard_Pemantauan_Bersepadu_JTM.pdf` (23 pages, 418 KB).
 - All 14 FR modules implemented and browser-verified. Task ID 2 complete.
+
+---
+Task ID: 3
+Agent: orchestrator (main) — bright theme redesign
+Task: Change dashboard background to a bright, attractive, eye-friendly color scheme (keeping glassmorphism).
+
+Work Log:
+- Rewrote `src/app/globals.css` `:root` variables: background → #eef6fb (light blue), foreground → #0f2942 (dark slate), glass-bg → rgba(255,255,255,0.6) (white frosted), glass-border → rgba(255,255,255,0.85), card-foreground → dark, muted-foreground → #5b7a99, sidebar → rgba(255,255,255,0.55).
+- Body background-image: soft radial gradients in bright pastel orbs — teal #5EEAD4/60, blue #93C5FD/60, violet #C4B5FD/50, mint #6EE7B3/50, cyan #A5F3FC — over a light linear gradient (#f0f9ff → #eef6fb → #f0fdfa). Eye-friendly, no harsh white.
+- Glass utilities: .glass / .glass-card / .glass-strong now use white frosted glass with darker shadow (rgba(15,41,66,...)) and inset white highlight. .glass-sidebar light tint.
+- Status badges recolored for light bg (darker text on lighter tinted bg). glass-table thead kept teal→navy gradient with white text; tbody text → dark slate #1e3a5f.
+- nav-item: dark text (#36506e), hover teal tint, active state teal gradient with navy text.
+- Prose (AI markdown): dark text (#1e3a5f), navy headings, teal h3, teal strong, amber em.
+- Updated all component files for bright-theme text colors:
+  - sidebar.tsx: navy brand title, slate-500 subtitles, teal-600 active icons, slate-900/10 borders.
+  - header.tsx: navy title, slate-600 buttons, white/50 search bg, teal-600 module icon.
+  - kpi-card.tsx: navy title, slate-900 value, slate-500 subtitles, emerald-600/rose-500/amber trend colors, slate-900/10 progress track.
+  - charts.tsx: AXIS fill #5b7a99, GRID rgba(15,41,66,0.08), tooltip glass-strong with navy/slate text, gauge text fill #0b2545, gauge bg rgba(15,41,66,0.08).
+  - data-table.tsx: navy title, white/50 search bg, slate-700 input, StatusBadge/PctCell/MoneyCell recolored (emerald-600/amber-600/rose-500, slate-700 money).
+  - ai-insight-panel.tsx: navy heading, teal-700 subtitle, white/60 inputs, rose-700 errors, white/40 markdown container.
+  - overview.tsx: navy hero values & section heading, slate-500 subtitles.
+  - module-view.tsx: navy KPI strip values, teal-500 spinner, rose-600 errors, table cell formatters recolored (rose-600/amber-600/emerald-600).
+  - page.tsx: bright orbs (teal-300/blue-300/violet-300), footer white/40 bg with slate-600 text + amber-700 classification badge.
+- Lint: `bun run lint` → 0 errors.
+- Restarted dev server (cleared .next cache) to force CSS recompile.
+
+Self-verification (Agent Browser + VLM):
+- Computed body backgroundColor = rgb(238, 246, 251) = #eef6fb (bright). PASS.
+- Overview: VLM confirms "bright/light background, soft pastel gradients (light blue-green to white) with subtle gradient orbs. Text is dark and highly readable. KPI cards have strong contrast. Attractive and eye-friendly, no harsh colors. No contrast problems."
+- Module FR-13: gauge 80% with dark readable text, vibrant donut charts on light bg, teal table header with dark rows, green/amber/red badges visible. PASS.
+- Mobile 390px: single column, bright bg consistent, KPI cards readable, hamburger menu present, no overflow. PASS.
+- AI Insight (GLM generated): dark markdown text readable on light glass, navy ## headings, bullets/bold clearly formatted, panel attractive. PASS.
+- No browser errors, no console errors, all API routes 200.
+
+Stage Summary:
+- Dashboard switched from dark navy glassmorphism → bright, attractive, eye-friendly light glassmorphism.
+- Palette: soft pastel gradient bg (cyan/teal/blue/lavender/mint orbs on light blue base) + white frosted glass panels + dark navy/slate text. JTM brand teal #0E8388 / royal #1B4B91 kept as accents.
+- All 14 modules, KPI cards, charts, tables, AI Insight panel, sidebar, header, footer verified readable & attractive in bright theme across desktop + mobile. Task ID 3 complete.

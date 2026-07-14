@@ -84,24 +84,24 @@ export function DataTable({
         <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
           <div>
             {title && (
-              <h3 className="font-display text-sm font-semibold text-white">{title}</h3>
+              <h3 className="font-display text-sm font-semibold text-jtm-navy">{title}</h3>
             )}
           </div>
           <div className="flex items-center gap-2">
             {searchable && (
-              <div className="flex items-center gap-2 rounded-lg border border-white/15 bg-white/5 px-2.5 py-1.5">
+              <div className="flex items-center gap-2 rounded-lg border border-slate-900/10 bg-white/50 px-2.5 py-1.5">
                 <Search className="h-3.5 w-3.5 text-slate-400" />
                 <input
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder="Cari…"
-                  className="w-28 bg-transparent text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none sm:w-40"
+                  className="w-28 bg-transparent text-xs text-slate-700 placeholder:text-slate-400 focus:outline-none sm:w-40"
                 />
               </div>
             )}
             <button
               onClick={exportCsv}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-white/15 bg-white/5 px-2.5 py-1.5 text-xs text-slate-200 transition hover:bg-white/10"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-slate-900/10 bg-white/50 px-2.5 py-1.5 text-xs text-slate-600 transition hover:bg-white/80"
               title="Eksport CSV"
             >
               <Download className="h-3.5 w-3.5" />
@@ -111,7 +111,7 @@ export function DataTable({
         </div>
       )}
 
-      <div className={cn("overflow-auto rounded-lg border border-white/10", maxHeight)}>
+      <div className={cn("overflow-auto rounded-lg border border-slate-900/10", maxHeight)}>
         <table className="glass-table">
           <thead className="sticky top-0 z-10">
             <tr>
@@ -136,7 +136,7 @@ export function DataTable({
           <tbody>
             {filtered.length === 0 ? (
               <tr>
-                <td colSpan={columns.length} className="py-8 text-center text-sm text-slate-500">
+                <td colSpan={columns.length} className="py-8 text-center text-sm text-slate-400">
                   Tiada data dijumpai.
                 </td>
               </tr>
@@ -161,7 +161,7 @@ export function DataTable({
           </tbody>
         </table>
       </div>
-      <div className="mt-2 flex items-center justify-between text-[11px] text-slate-500">
+      <div className="mt-2 flex items-center justify-between text-[11px] text-slate-400">
         <span>{filtered.length} rekod</span>
         <span>JTM · Klasifikasi Terhad</span>
       </div>
@@ -217,14 +217,14 @@ export function StatusBadge({ status }: { status: string }) {
 
 export function PctCell({ value }: { value: number }) {
   const v = Number(value) || 0;
-  const color = v >= 80 ? "text-emerald-300" : v >= 60 ? "text-amber-300" : "text-rose-300";
+  const color = v >= 80 ? "text-emerald-600" : v >= 60 ? "text-amber-600" : "text-rose-500";
   return <span className={cn("font-semibold tabular-nums", color)}>{v}%</span>;
 }
 
 export function MoneyCell({ value }: { value: number }) {
   const v = Number(value) || 0;
   return (
-    <span className="tabular-nums text-slate-200">
+    <span className="tabular-nums text-slate-700">
       RM {v.toLocaleString("en-MY", { maximumFractionDigits: 0 })}
     </span>
   );

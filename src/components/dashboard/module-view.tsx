@@ -52,7 +52,7 @@ export function ModuleView({ code }: ModuleViewProps) {
     return (
       <div className="flex min-h-[400px] items-center justify-center">
         <div className="flex flex-col items-center gap-3 text-slate-400">
-          <Loader2 className="h-8 w-8 animate-spin text-teal-400" />
+          <Loader2 className="h-8 w-8 animate-spin text-teal-500" />
           <p className="text-sm">Memuatkan data {code}…</p>
         </div>
       </div>
@@ -62,7 +62,7 @@ export function ModuleView({ code }: ModuleViewProps) {
   if (error || !data) {
     return (
       <div className="glass-card p-8 text-center">
-        <p className="text-rose-300">{error || "Data tidak tersedia"}</p>
+        <p className="text-rose-600">{error || "Data tidak tersedia"}</p>
       </div>
     );
   }
@@ -87,10 +87,10 @@ function KpiStrip({ kpi, accent }: { kpi: Record<string, any>; accent: string })
             className="pointer-events-none absolute -right-4 -top-4 h-14 w-14 rounded-full opacity-25 blur-2xl"
             style={{ background: accent }}
           />
-          <p className="truncate text-[10px] uppercase tracking-wide text-slate-400">
+          <p className="truncate text-[10px] uppercase tracking-wide text-slate-500">
             {formatKpiLabel(key)}
           </p>
-          <p className="mt-1 font-display text-lg font-bold text-white">
+          <p className="mt-1 font-display text-lg font-bold text-jtm-navy">
             {formatKpiValue(val)}
           </p>
         </div>
@@ -258,7 +258,7 @@ function ModuleCharts({ code, data }: { code: ModuleCode; data: any }) {
               { key: "certNo", label: "No. Sijil" },
               { key: "start", label: "Mula Sah" },
               { key: "expiry", label: "Tarikh Luput" },
-              { key: "daysToExpiry", label: "Hari Lagi", align: "right", format: (v) => (v !== null ? <span className={v < 0 ? "text-rose-300" : v <= 90 ? "text-amber-300" : "text-emerald-300"}>{v}</span> : "—") },
+              { key: "daysToExpiry", label: "Hari Lagi", align: "right", format: (v) => (v !== null ? <span className={v < 0 ? "text-rose-600" : v <= 90 ? "text-amber-600" : "text-emerald-600"}>{v}</span> : "—") },
               { key: "status", label: "Status", format: (v) => <StatusBadge status={v} /> },
             ]}
             rows={data.table}
@@ -398,7 +398,7 @@ function ModuleCharts({ code, data }: { code: ModuleCode; data: any }) {
               { key: "category", label: "Kategori" },
               { key: "systemQty", label: "Sistem", align: "right" },
               { key: "physicalQty", label: "Fizik", align: "right" },
-              { key: "variance", label: "Varians", align: "right", format: (v) => <span className={Math.abs(v) > 2 ? "font-bold text-rose-300" : "text-emerald-300"}>{v > 0 ? `+${v}` : v}</span> },
+              { key: "variance", label: "Varians", align: "right", format: (v) => <span className={Math.abs(v) > 2 ? "font-bold text-rose-600" : "text-emerald-600"}>{v > 0 ? `+${v}` : v}</span> },
               { key: "status", label: "Status", format: (v) => <StatusBadge status={v} /> },
               { key: "verifyDate", label: "Tarikh Semak" },
             ]}
@@ -578,7 +578,7 @@ function ModuleCharts({ code, data }: { code: ModuleCode; data: any }) {
               { key: "location", label: "Lokasi" },
               { key: "brand", label: "Jenama & Model" },
               { key: "year", label: "Tahun Beli", align: "right" },
-              { key: "age", label: "Umur (tahun)", align: "right", format: (v) => <span className={v >= 5 ? "font-bold text-rose-300" : "text-amber-300"}>{v}</span> },
+              { key: "age", label: "Umur (tahun)", align: "right", format: (v) => <span className={v >= 5 ? "font-bold text-rose-600" : "text-amber-600"}>{v}</span> },
               { key: "status", label: "Status", format: (v) => <StatusBadge status={v} /> },
               { key: "os", label: "OS" },
             ]}

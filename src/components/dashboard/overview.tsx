@@ -66,8 +66,8 @@ export function Overview({ onSelectModule }: OverviewProps) {
       <section>
         <div className="mb-3 flex items-center justify-between">
           <div>
-            <h2 className="font-display text-lg font-bold text-white">Ringkasan KPI 14 Modul</h2>
-            <p className="text-xs text-slate-400">Klik mana-mana kad untuk butiran modul terperinci</p>
+            <h2 className="font-display text-lg font-bold text-jtm-navy">Ringkasan KPI 14 Modul</h2>
+            <p className="text-xs text-slate-500">Klik mana-mana kad untuk butiran modul terperinci</p>
           </div>
         </div>
 
@@ -178,14 +178,14 @@ function HeroStat({
       <div className="relative flex items-center gap-3">
         <div
           className="grid h-10 w-10 shrink-0 place-items-center rounded-lg"
-          style={{ background: `${accent}22`, color: accent }}
+          style={{ background: `${accent}1f`, color: accent }}
         >
           {icon}
         </div>
         <div className="min-w-0">
-          <p className="truncate text-[11px] text-slate-400">{label}</p>
-          <p className="font-display text-xl font-bold text-white">{value}</p>
-          <p className="truncate text-[10px] text-slate-500">{sub}</p>
+          <p className="truncate text-[11px] text-slate-500">{label}</p>
+          <p className="font-display text-xl font-bold text-jtm-navy">{value}</p>
+          <p className="truncate text-[10px] text-slate-400">{sub}</p>
         </div>
       </div>
     </div>

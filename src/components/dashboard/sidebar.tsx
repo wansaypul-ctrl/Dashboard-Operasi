@@ -18,7 +18,7 @@ export function Sidebar({ active, onSelect, mobileOpen, onCloseMobile }: Sidebar
       {/* Mobile overlay */}
       {mobileOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden"
+          className="fixed inset-0 z-40 bg-slate-900/30 backdrop-blur-sm lg:hidden"
           onClick={onCloseMobile}
           aria-hidden
         />
@@ -31,17 +31,17 @@ export function Sidebar({ active, onSelect, mobileOpen, onCloseMobile }: Sidebar
         )}
       >
         {/* Brand header */}
-        <div className="flex items-center gap-3 border-b border-white/10 px-5 py-5">
-          <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-[#0e8388] to-[#1b4b91] text-white shadow-lg shadow-teal-500/20">
+        <div className="flex items-center gap-3 border-b border-slate-900/10 px-5 py-5">
+          <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-[#0e8388] to-[#1b4b91] text-white shadow-lg shadow-teal-500/30">
             <ShieldCheck className="h-6 w-6" />
           </div>
           <div className="min-w-0 flex-1">
-            <p className="font-display text-[15px] font-bold leading-tight text-white">Dashboard JTM</p>
-            <p className="truncate text-[11px] text-slate-300/80">Pemantauan Bersepadu</p>
+            <p className="font-display text-[15px] font-bold leading-tight text-jtm-navy">Dashboard JTM</p>
+            <p className="truncate text-[11px] text-slate-500">Pemantauan Bersepadu</p>
           </div>
           <button
             onClick={onCloseMobile}
-            className="rounded-lg p-1.5 text-slate-300 hover:bg-white/10 lg:hidden"
+            className="rounded-lg p-1.5 text-slate-500 hover:bg-black/5 lg:hidden"
             aria-label="Tutup menu"
           >
             <X className="h-5 w-5" />
@@ -62,7 +62,7 @@ export function Sidebar({ active, onSelect, mobileOpen, onCloseMobile }: Sidebar
             const items = MODULES.filter((m) => m.group === group);
             return (
               <div key={group} className="mt-5">
-                <p className="px-3 pb-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400/80">
+                <p className="px-3 pb-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400">
                   {group}
                 </p>
                 <div className="space-y-0.5">
@@ -83,10 +83,10 @@ export function Sidebar({ active, onSelect, mobileOpen, onCloseMobile }: Sidebar
         </nav>
 
         {/* Footer */}
-        <div className="border-t border-white/10 px-5 py-4">
+        <div className="border-t border-slate-900/10 px-5 py-4">
           <div className="glass-subtle rounded-lg px-3 py-2.5">
-            <p className="text-[11px] font-medium text-teal-200/90">v1.0 · GLM 5.2</p>
-            <p className="mt-0.5 text-[10px] text-slate-400">© JTM · KSM Malaysia</p>
+            <p className="text-[11px] font-medium text-teal-700">v1.0 · GLM 5.2</p>
+            <p className="mt-0.5 text-[10px] text-slate-500">© JTM · KSM Malaysia</p>
           </div>
         </div>
       </aside>
@@ -115,16 +115,16 @@ function NavButton({
       onMouseLeave={() => setHover(false)}
       className={cn("nav-item w-full", active && "active")}
     >
-      <span className={cn("shrink-0 transition-colors", active ? "text-teal-300" : hover ? "text-teal-200" : "text-slate-400")}>
+      <span className={cn("shrink-0 transition-colors", active ? "text-teal-600" : hover ? "text-teal-500" : "text-slate-400")}>
         {icon}
       </span>
       <span className="flex-1 truncate text-left">{label}</span>
       {code && (
-        <span className={cn("text-[9px] font-mono tracking-wide", active ? "text-teal-200" : "text-slate-500")}>
+        <span className={cn("text-[9px] font-mono tracking-wide", active ? "text-teal-600" : "text-slate-400")}>
           {code}
         </span>
       )}
-      {active && <ChevronRight className="h-3.5 w-3.5 text-teal-300" />}
+      {active && <ChevronRight className="h-3.5 w-3.5 text-teal-600" />}
     </button>
   );
 }
