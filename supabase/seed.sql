@@ -122,23 +122,31 @@ from generate_series(1, 28) g;
 
 -- ============================================================
 -- FR-03 — Program Accreditation (10 rows, one per program)
+-- Assigns each program a specific expiry offset (1:1, in order).
 -- ============================================================
 insert into public.tbl_program_accreditation
   (program_id, program_name, accreditation_body, cert_no, start_date, expiry_date, status)
+with programs as (
+  select id, program_name,
+         row_number() over (order by program_code) as rn
+  from public.tbl_program
+  where program_code in ('AUT-001','ELE-002','WLD-003','IT-004','MEC-005','AC-006','CIV-007','FNB-008','BTS-009','FRZ-010')
+),
+offsets as (
+  select d, g
+  from unnest(array[-400,-30,20,45,80,120,250,600,900,1200]::int[])
+    with ordinality as t(d, g)
+)
 select
   p.id,
   p.program_name,
   (array['JPK','MQA','DSD'])[1 + floor(random()*3)::int],
-  'ACC-' || (2022 + floor(random()*4)::int) || '-' || lpad(g::text, 4, '0'),
+  'ACC-' || (2022 + floor(random()*4)::int) || '-' || lpad(p.rn::text, 4, '0'),
   (current_date - (200 + floor(random()*1300))::int),
-  (current_date + d),
-  case when d < 0 then 'Luput' when d <= 90 then 'Akan Luput' else 'Aktif' end
-from public.tbl_program p
-cross join lateral (
-  select (array[-400,-30,20,45,80,120,250,600,900,1200])[g]::int as d
-) v
-with ordinality as t(g, d)
-where p.program_code in ('AUT-001','ELE-002','WLD-003','IT-004','MEC-005','AC-006','CIV-007','FNB-008','BTS-009','FRZ-010');
+  (current_date + o.d),
+  case when o.d < 0 then 'Luput' when o.d <= 90 then 'Akan Luput' else 'Aktif' end
+from programs p
+join offsets o on p.rn = o.g;
 
 -- ============================================================
 -- FR-04 — Instructor Certification (25 rows; ~11 uncertified)
