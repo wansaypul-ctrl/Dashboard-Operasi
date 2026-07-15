@@ -59,8 +59,8 @@ server.log
 prd_pdf_build
 
 # Prisma local DB (do not ship the local SQLite file)
-/db/*.db
-/db/*.db-journal
+*.db
+*.db-journal
 
 # Tool results / screenshots
 /tool-results/

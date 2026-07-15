@@ -1,0 +1,13 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "nextjs",
+  "buildCommand": "bun run build",
+  "installCommand": "bun install",
+  "build": {
+    "env": {
+      "DATABASE_URL": "file:../db/vercel-prod.db",
+      "NEXT_PUBLIC_SUPABASE_URL": "https://fvgchttusdnfsjjtzhkf.supabase.co",
+      "NEXT_PUBLIC_SUPABASE_ANON_KEY": "sb_publishable_55W-PRplj2AqPe68PRtXcA_rnmup_-G"
+    }
+  }
+}
