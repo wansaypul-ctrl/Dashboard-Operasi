@@ -165,3 +165,31 @@ Stage Summary:
 - Dashboard switched from dark navy glassmorphism → bright, attractive, eye-friendly light glassmorphism.
 - Palette: soft pastel gradient bg (cyan/teal/blue/lavender/mint orbs on light blue base) + white frosted glass panels + dark navy/slate text. JTM brand teal #0E8388 / royal #1B4B91 kept as accents.
 - All 14 modules, KPI cards, charts, tables, AI Insight panel, sidebar, header, footer verified readable & attractive in bright theme across desktop + mobile. Task ID 3 complete.
+
+---
+Task ID: 4
+Agent: orchestrator (main) — Supabase backend setup
+Task: Set up the database in the user's Supabase project (fvgchttusdnfsjjtzhkf).
+
+Work Log:
+- User provided: Project URL https://fvgchttusdnfsjjtzhkf.supabase.co, publishable/anon key, direct connection string (with [YOUR-PASSWORD] placeholder).
+- Verified Supabase project reachable + anon key valid via direct REST ping (PGRST205 = tables not yet created, expected).
+- Added env vars to .env: NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY (public/safe), SUPABASE_DIRECT_URL (commented, needs real password). Kept DATABASE_URL=SQLite so local preview keeps working.
+- Created supabase/schema.sql (452 lines): 14 core tbl_* tables (FR-01..FR-14) + 4 lookup tables (tbl_program, tbl_session, tbl_staff, tbl_training_center) + tbl_audit_log. PostgreSQL-native: uuid PKs default gen_random_uuid(), timestamptz, CHECK constraints (cert_level, category, status enums), FKs, indexes, updated_at trigger function, ENABLE ROW LEVEL SECURITY on ALL tables, SELECT policy for anon+authenticated, write policy for authenticated. pgcrypto extension.
+- Created supabase/seed.sql (424 lines): realistic dummy data matching local SQLite seed — 10 programs, 4 sessions, 20 staff, 8 centers, 32 enrolments, 28 complaints, 10 accreditations, 25 instructors, 20 training records, 14 budget-mengurus, 8 projects, 18 stock items, 12 short courses, ~120 graduates, 24 trust-account txns (with running balance window), 6 mengurus accounts, 15 assets, 75 computers, 8 audit logs. Uses generate_series + arrays + random for realistic distribution. Truncates first (cascade) so re-runnable. Final SELECT returns row-count summary.
+- Created supabase/views.sql (170 lines): 13 aggregate KPI views (vw_enrolment_summary per PRD §5.4, vw_complaint_summary, vw_accreditation_summary, vw_instructor_cert_summary, vw_staff_training_summary, vw_budget_mengurus_summary, vw_budget_pembangunan_summary, vw_stock_verification_summary, vw_short_course_summary, vw_graduates_summary, vw_trust_account_summary, vw_asset_summary, vw_computer_summary) + vw_executive_summary (master 14-KPI one-row view).
+- Installed @supabase/supabase-js@2.110.5.
+- Created src/lib/supabase.ts: getSupabase() client (anon key, persistSession:false, singleton), isSupabaseConfigured flag, testSupabaseConnection() that fetches one row from tbl_program to accurately detect missing tables (PGRST205) vs empty tables vs auth failure.
+- Created src/app/api/supabase-status/route.ts: GET endpoint reporting configured/connected/count/message/hint — lets the dashboard verify live Supabase connectivity.
+- Created supabase/README.md: setup instructions (Option A: SQL Editor — no password needed; Option B: Supabase CLI), verification steps, security notes (RLS, anon key safe, service_role never client-side), optional Prisma→Postgres switch guide.
+- Lint: 0 errors. Local SQLite dashboard still serving all 14 modules (FR-01 2829 pelajar, FR-11 RM431339 baki).
+
+Self-verification:
+- curl https://fvgchttusdnfsjjtzhkf.supabase.co/rest/v1/tbl_program → HTTP 404 PGRST205 (project reachable, anon key valid, tables not yet created — expected before user runs SQL).
+- GET /api/supabase-status → { configured: true, connected: false, message: "...Could not find the table 'public.tbl_program' in the schema cache", hint: "Pastikan schema.sql dan seed.sql telah dilaksanakan..." } — accurate pre-setup state.
+- GET /api/dashboard → all 14 modules still serving from local SQLite (preview unaffected).
+
+Stage Summary:
+- Supabase backend fully prepared: schema.sql + seed.sql + views.sql ready to run in the user's Supabase SQL Editor (no password needed via dashboard). Supabase JS client wired in + status endpoint live.
+- The user needs to run 3 SQL files in their Supabase SQL Editor (schema → seed → views), then /api/supabase-status will flip to connected:true with programsCount:10.
+- Local dashboard preview keeps using SQLite so it never breaks offline. Task ID 4 complete.
