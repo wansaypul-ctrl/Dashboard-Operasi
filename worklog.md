@@ -246,3 +246,30 @@ Stage Summary:
 - SECURITY WARNING given to user: PAT was shared in plaintext chat → recommend REVOKING this token at https://github.com/settings/tokens and generating a new one for future use.
 - Next step for user: deploy to Netlify by importing the repo + adding 3 env vars (NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, DATABASE_URL).
 - Task ID 6 complete.
+
+---
+Task ID: 7
+Agent: orchestrator (main) — Vercel deployment setup
+Task: Configure project for Vercel deployment and push to GitHub.
+
+Work Log:
+- Identified build incompatibilities with Vercel: `output: "standalone"` + `cp -r` commands in build script (designed for self-hosting, not serverless).
+- Updated `next.config.ts`: removed `output: "standalone"`, added `outputFileTracingIncludes` to bundle `./db/vercel-prod.db` with `/api/**` serverless functions.
+- Updated `package.json` build script: `prisma generate && prisma db push --skip-generate && bun run prisma/seed.ts && next build` — creates + seeds SQLite DB during build, then bundles it. Added `postinstall: "prisma generate"`. Kept `build:standalone` for self-hosting fallback.
+- Updated `src/lib/db.ts`: added `resolveDbUrl()` that detects Vercel runtime (`process.env.VERCEL + VERCEL_ENV=production`) and copies bundled DB from `./db/vercel-prod.db` to `/tmp/vercel-prod.db` (only writable directory on serverless), then returns `file:/tmp/vercel-prod.db`. Local dev unaffected.
+- Created `vercel.json`: framework=nextjs, buildCommand=bun run build, installCommand=bun install, build.env with DATABASE_URL=file:../db/vercel-prod.db (Prisma resolves relative to schema.prisma → project-root db/), NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY.
+- Added `db/.gitkeep` to ensure DB directory exists in repo.
+- Updated `.gitignore`: changed `/db/*.db` → `*.db` (catch all .db files anywhere, defense in depth).
+- Updated `.env.example` with Vercel path note.
+- Tested build: `DATABASE_URL=file:../db/vercel-prod.db bun run build` → ✓ Compiled successfully in 10.1s. All routes: ○ / (static), ƒ /api/dashboard, /api/modules/[moduleId], /api/ai-insight, /api/supabase-status (dynamic). DB file correctly created at `db/vercel-prod.db`.
+- Verified dev server still works: `curl /api/dashboard` → 14 modules, FR-01 2829 pelajar.
+- Committed: `feat: Vercel deployment support` (0d60dd5). 7 files changed.
+- Pushed to GitHub using PAT: `acbf96d..0d60dd5 main -> main`.
+- Verified via GitHub API: commit 0d60dd5 on main, vercel.json HTTP 200, .env HTTP 404 (not pushed).
+
+Stage Summary:
+- Project is now Vercel-ready and pushed to https://github.com/wansaypul-ctrl/Dashboard-Operasi (commit 0d60dd5).
+- Architecture for Vercel: build-time SQLite seed → bundle DB with serverless functions via outputFileTracingIncludes → runtime copy to /tmp (writable) → Prisma reads from /tmp. No external DB needed for the demo.
+- vercel.json pre-configures build env vars (DATABASE_URL, Supabase URL+key). User just imports the repo on Vercel — no manual config needed.
+- Next step for user: import repo on Vercel (https://vercel.com/new) → deploy. Build auto-detects bun + Next.js.
+- Task ID 7 complete.
