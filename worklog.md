@@ -193,3 +193,32 @@ Stage Summary:
 - Supabase backend fully prepared: schema.sql + seed.sql + views.sql ready to run in the user's Supabase SQL Editor (no password needed via dashboard). Supabase JS client wired in + status endpoint live.
 - The user needs to run 3 SQL files in their Supabase SQL Editor (schema → seed → views), then /api/supabase-status will flip to connected:true with programsCount:10.
 - Local dashboard preview keeps using SQLite so it never breaks offline. Task ID 4 complete.
+
+---
+Task ID: 5
+Agent: orchestrator (main) — GitHub deployment prep
+Task: Deploy the project to user's GitHub repo https://github.com/wansaypul-ctrl/Dashboard-Operasi.git
+
+Work Log:
+- Checked git state: repo already initialized on `main` branch, 118 files tracked, no remote configured.
+- Enhanced .gitignore: added `!.env.example` negation, Netlify (.netlify), prd_pdf_build, Prisma local DB (/db/*.db, *.db-journal), tool-results, verify-*.png.
+- Created .env.example — safe template with placeholders for DATABASE_URL, NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, SUPABASE_DIRECT_URL.
+- Created netlify.toml — build command `bun run build`, publish `.next`, NODE_VERSION=20, env vars (DATABASE_URL=file:/tmp/dev.db, NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY), @netlify/plugin-nextjs, SPA redirect, security headers (X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy).
+- Created README.md — project overview, quick start, Supabase setup, Netlify deploy steps, project structure, 14-module reference table.
+- SECURITY CLEANUP: removed from git tracking (files stay on disk only) — `.env` (contains real Supabase publishable key), `db/custom.db` (local SQLite with seed data), `.prd_pdf_build/` (PDF build artifacts: body.pdf, build_body.py, cover.html, cover.pdf, merge.py), `.zscripts/dev.pid`. Verified via `git check-ignore` + `git diff --cached --name-status` that .env is staged as D (deleted from repo).
+- Committed: "chore: prepare for Netlify deployment" (78812c2). 12 files changed, 201 insertions, 3756 deletions.
+- Added remote: origin → https://github.com/wansaypul-ctrl/Dashboard-Operasi.git
+- Attempted `git push -u origin main` → FAILED: "could not read Username for 'https://github.com'" — GitHub requires authentication (PAT) for pushes, even on public repos. No GITHUB_TOKEN/GH_TOKEN env vars available, no gh CLI, no credential helper configured. Cannot push from this sandboxed environment without user credentials.
+- Verified repo exists and is public: `curl https://github.com/wansaypul-ctrl/Dashboard-Operasi` → HTTP 200.
+- Created git bundle fallback: /home/z/my-project/download/Dashboard-Operasi.git-bundle (947KB, complete history, verified integrity). User can clone from this bundle if needed.
+- Lint: 0 errors. Dev server still running on :3000.
+
+Stage Summary:
+- Project is FULLY PREPARED and COMMITTED locally — 110 tracked files, 5 commits, remote `origin` configured pointing to the GitHub repo.
+- The push step requires the user's GitHub credentials (Personal Access Token), which I cannot access. Provided 3 push options in the final message:
+  1. Run `git push -u origin main` locally with a GitHub PAT.
+  2. Clone the git bundle from /download/ and push.
+  3. Upload via GitHub web UI.
+- Netlify deployment instructions provided: import from Git → env vars → deploy. netlify.toml auto-configures build.
+- Secrets (.env with publishable key, local DB) are properly excluded from the repo.
+- Task ID 5 complete (push step delegated to user due to credential limitation).
